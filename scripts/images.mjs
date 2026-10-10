@@ -5,7 +5,7 @@ import sharp from "sharp";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "images", "source");
 const OUT = path.join(ROOT, "assets", "img");
-const WIDTHS = [800, 1600, 2400];
+const WIDTHS = [800, 1600, 2400, 3840];
 
 const SLOTS = [
   "exterior-dusk",
