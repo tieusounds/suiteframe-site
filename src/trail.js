@@ -71,7 +71,7 @@
     var selectors = [
       ".site-nav",
       ".brand",
-      ".hero__copy",
+      // hero__copy omitted — left gutter must stay clean through the hero
       ".statement",
       ".demo__lead",
       ".demo__sub",
@@ -414,21 +414,12 @@
     return out;
   }
 
-  function projectChain(points, obstacles, gutterX) {
+  function projectChain(points, obstacles, gutterX, docW) {
     return points.map(function (p) {
+      // Never shove authored gutter rails — that creates chevron spikes
+      if (p.x < gutterX * 2.2 || p.x > docW - gutterX * 2.2) return p;
       if (!hits(obstacles, p.x, p.y)) return p;
-      // Prefer staying in the left/right gutters when shoving
-      var prefer =
-        p.x < gutterX * 2.5
-          ? [
-              [-1, 0],
-              [0, 1],
-              [0, -1],
-              [-1, 1],
-              [-1, -1],
-            ]
-          : null;
-      return pushFree(obstacles, p.x, p.y, prefer);
+      return pushFree(obstacles, p.x, p.y);
     });
   }
 
@@ -562,7 +553,7 @@
     raw = densify(raw, 8);
     raw = wobble(raw, 0.85);
     var gutterX = Math.max(14, Math.min(36, bounds.docW * 0.028));
-    spine = projectChain(raw, obstacles, gutterX);
+    spine = projectChain(raw, obstacles, gutterX, bounds.docW);
     measure(spine);
     draw();
   }
