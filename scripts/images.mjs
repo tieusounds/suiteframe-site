@@ -9,6 +9,7 @@ const WIDTHS = [800, 1600, 2400];
 
 const SLOTS = [
   "exterior-dusk",
+  "exterior-portrait",
   "exterior-snow",
   "living",
   "kitchen",
