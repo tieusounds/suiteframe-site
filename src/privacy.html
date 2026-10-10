@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="{{lang}}" dir="{{dir}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{privacy_title}}</title>
+    <meta name="description" content="{{privacy_description}}" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#121816" />
+    <link rel="canonical" href="https://suiteframe.ch{{privacy_path}}" />
+    <link rel="alternate" hreflang="en" href="https://suiteframe.ch/privacy/" />
+    <link rel="alternate" hreflang="de" href="https://suiteframe.ch/de/privacy/" />
+    <link rel="alternate" hreflang="fr" href="https://suiteframe.ch/fr/privacy/" />
+    <link rel="alternate" hreflang="x-default" href="https://suiteframe.ch/privacy/" />
+    <link rel="icon" href="{{assetPrefix}}assets/brand/suiteframe-app-icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="{{assetPrefix}}assets/brand/suiteframe-app-icon.png" />
+    <link rel="preload" href="{{assetPrefix}}assets/fonts/cormorant-garamond-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{{assetPrefix}}assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="{{assetPrefix}}assets/styles.css" />
+    {{analytics}}
+  </head>
+  <body class="page-legal">
+    <a class="skip" href="#main">{{skip}}</a>
+
+    <header class="legal-nav">
+      <a class="brand" href="{{path}}">
+        <img
+          class="brand__logo"
+          src="{{assetPrefix}}assets/brand/suiteframe-wordmark-light.png"
+          alt="Suiteframe"
+          width="399"
+          height="86"
+        />
+      </a>
+      <nav class="nav-end">
+        <ul class="langs" aria-label="{{lang_label}}">
+          <li>
+            <a href="/privacy/" hreflang="en" {{langCurrentEn}}>{{lang_en}}</a>
+          </li>
+          <li>
+            <a href="/de/privacy/" hreflang="de" {{langCurrentDe}}>{{lang_de}}</a>
+          </li>
+          <li>
+            <a href="/fr/privacy/" hreflang="fr" {{langCurrentFr}}>{{lang_fr}}</a>
+          </li>
+        </ul>
+        <a class="nav-contact" href="{{path}}#contact">{{nav_contact}}</a>
+      </nav>
+    </header>
+
+    <main id="main" class="legal">
+      <p class="legal__back"><a href="{{path}}">{{privacy_back}}</a></p>
+      <h1>{{privacy_h1}}</h1>
+      <p>{{privacy_intro}}</p>
+
+      <h2>{{privacy_form_h}}</h2>
+      <p>{{privacy_form_body}}</p>
+
+      <h2>{{privacy_analytics_h}}</h2>
+      <p>{{privacy_analytics_body}}</p>
+
+      <h2>{{privacy_consent_h}}</h2>
+      <p>{{privacy_consent_body}}</p>
+
+      <h2>{{privacy_retention_h}}</h2>
+      <p>{{privacy_retention_body}}</p>
+
+      <h2>{{privacy_contact_h}}</h2>
+      <p>{{privacy_contact_body}} <a href="mailto:{{email}}">{{email}}</a>.</p>
+
+      <h2>{{privacy_impressum_h}}</h2>
+      <p>{{privacy_impressum_body}}</p>
+    </main>
+
+    <footer class="site-footer">
+      <span>{{footer}}</span>
+      <nav class="footer-links" aria-label="{{footer_nav_label}}">
+        <a href="{{privacy_path}}">{{privacy_link}}</a>
+        {{cookieSettingsLink}}
+        <a href="mailto:{{email}}">{{email}}</a>
+      </nav>
+    </footer>
+
+    {{consentBanner}}
+    {{pageScripts}}
+  </body>
+</html>

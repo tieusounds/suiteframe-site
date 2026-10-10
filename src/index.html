@@ -5,19 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{title}}</title>
     <meta name="description" content="{{description}}" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#121816" />
     <link rel="canonical" href="https://suiteframe.ch{{path}}" />
     <link rel="alternate" hreflang="en" href="https://suiteframe.ch/" />
     <link rel="alternate" hreflang="de" href="https://suiteframe.ch/de/" />
     <link rel="alternate" hreflang="fr" href="https://suiteframe.ch/fr/" />
     <link rel="alternate" hreflang="x-default" href="https://suiteframe.ch/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Suiteframe" />
+    <meta property="og:title" content="{{title}}" />
+    <meta property="og:description" content="{{description}}" />
+    <meta property="og:url" content="https://suiteframe.ch{{path}}" />
+    <meta property="og:locale" content="{{og_locale}}" />
+    {{ogLocaleAlternates}}
+    <meta property="og:image" content="https://suiteframe.ch/assets/img/og-1200.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="{{hero_alt}}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{title}}" />
+    <meta name="twitter:description" content="{{description}}" />
+    <meta name="twitter:image" content="https://suiteframe.ch/assets/img/og-1200.jpg" />
+    <meta name="twitter:image:alt" content="{{hero_alt}}" />
     <link rel="icon" href="{{assetPrefix}}assets/brand/suiteframe-app-icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="{{assetPrefix}}assets/brand/suiteframe-app-icon.png" />
     <link rel="preload" href="{{assetPrefix}}assets/fonts/cormorant-garamond-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{{assetPrefix}}assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="{{assetPrefix}}assets/styles.css" />
+    <script type="application/ld+json">{{jsonld}}</script>
+    {{analytics}}
   </head>
   <body>
-    <a class="skip" href="#main">Skip</a>
+    <a class="skip" href="#main">{{skip}}</a>
 
     <header class="site-nav">
       <a class="brand" href="{{path}}">
@@ -30,7 +51,7 @@
         />
       </a>
       <nav class="nav-end">
-        <ul class="langs" aria-label="Language">
+        <ul class="langs" aria-label="{{lang_label}}">
           <li>
             <a href="/" hreflang="en" {{langCurrentEn}}>{{lang_en}}</a>
           </li>
@@ -46,7 +67,7 @@
     </header>
 
     <main id="main">
-      <section class="hero" aria-label="Suiteframe">
+      <section class="hero">
         <div class="hero__media">
           <picture>
             <source
@@ -97,61 +118,135 @@
         </div>
       </section>
 
-      <section class="section" id="what" aria-label="{{what_label}}">
+      <section class="section" id="what" aria-labelledby="what-title">
+        <h2 class="visually-hidden" id="what-title">{{what_label}}</h2>
         <p class="statement">{{what_body}}</p>
       </section>
 
-      <div class="gallery" aria-label="{{gallery_label}}">
-        <figure class="gallery__item">
+      <section class="gallery" id="gallery" aria-labelledby="gallery-title">
+        <h2 class="visually-hidden" id="gallery-title">{{gallery_label}}</h2>
+        <figure class="gallery__item" data-image="living">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/living-800.avif 800w, {{assetPrefix}}assets/img/living-1600.avif 1600w" sizes="(max-width:768px) 100vw, 58vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/living-800.webp 800w, {{assetPrefix}}assets/img/living-1600.webp 1600w" sizes="(max-width:768px) 100vw, 58vw" />
             <img src="{{assetPrefix}}assets/img/living-1600.jpg" alt="{{living_alt}}" width="1600" height="900" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item">
+        <figure class="gallery__item" data-image="bedroom">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/bedroom-800.avif 800w, {{assetPrefix}}assets/img/bedroom-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/bedroom-800.webp 800w, {{assetPrefix}}assets/img/bedroom-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
             <img src="{{assetPrefix}}assets/img/bedroom-1600.jpg" alt="{{bedroom_alt}}" width="1600" height="900" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item">
+        <figure class="gallery__item" data-image="kitchen">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/kitchen-800.avif 800w, {{assetPrefix}}assets/img/kitchen-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/kitchen-800.webp 800w, {{assetPrefix}}assets/img/kitchen-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
             <img src="{{assetPrefix}}assets/img/kitchen-1600.jpg" alt="{{kitchen_alt}}" width="1600" height="900" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item">
+        <figure class="gallery__item" data-image="portrait">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.avif 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.avif 1600w" sizes="(max-width:768px) 100vw, 34vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.webp 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.webp 1600w" sizes="(max-width:768px) 100vw, 34vw" />
             <img src="{{assetPrefix}}assets/img/exterior-portrait-1600.jpg" alt="{{portrait_alt}}" width="819" height="1024" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item gallery__item--wide">
+        <figure class="gallery__item gallery__item--wide" data-image="terrace">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/terrace-800.avif 800w, {{assetPrefix}}assets/img/terrace-1600.avif 1600w, {{assetPrefix}}assets/img/terrace-2400.avif 2400w" sizes="100vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/terrace-800.webp 800w, {{assetPrefix}}assets/img/terrace-1600.webp 1600w, {{assetPrefix}}assets/img/terrace-2400.webp 2400w" sizes="100vw" />
+            <img src="{{assetPrefix}}assets/img/terrace-1600.jpg" alt="{{terrace_alt}}" width="1600" height="900" loading="lazy" />
+          </picture>
+        </figure>
+        <figure class="gallery__item gallery__item--wide" data-image="snow">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-snow-800.avif 800w, {{assetPrefix}}assets/img/exterior-snow-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.avif 2400w" sizes="100vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-snow-800.webp 800w, {{assetPrefix}}assets/img/exterior-snow-1600.webp 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.webp 2400w" sizes="100vw" />
             <img src="{{assetPrefix}}assets/img/exterior-snow-1600.jpg" alt="{{snow_alt}}" width="1600" height="900" loading="lazy" />
           </picture>
         </figure>
-      </div>
+      </section>
 
-      <section class="section" id="pricing" aria-label="{{pricing_label}}">
+      <section class="section" id="pricing" aria-labelledby="pricing-title">
+        <h2 class="visually-hidden" id="pricing-title">{{pricing_label}}</h2>
         <p class="pricing-line">{{pricing_body}}</p>
       </section>
 
-      <section class="contact" id="contact" aria-label="{{contact_label}}">
-        <p class="contact__hint">{{contact_hint}}</p>
-        <a class="contact__mail" href="mailto:{{email}}">{{email}}</a>
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <h2 class="visually-hidden" id="contact-title">{{contact_label}}</h2>
+        <div class="contact__intro">
+          <p class="contact__hint">{{contact_hint}}</p>
+          <p class="contact__alt">{{contact_or_email}} <a class="contact__mail-inline" href="mailto:{{email}}">{{email}}</a></p>
+        </div>
+
+        <div id="quote-success" class="quote-success" tabindex="-1" hidden>
+          <p class="quote-success__title">{{form_success_title}}</p>
+          <p class="quote-success__body">{{form_success_body}}</p>
+        </div>
+
+        <form
+          class="quote"
+          id="quote-form"
+          novalidate
+          data-subject="{{form_subject}}"
+          data-sending="{{form_sending}}"
+          data-error-required="{{form_error_required}}"
+          data-error-email="{{form_error_email}}"
+          data-error-url="{{form_error_url}}"
+          data-error-send="{{form_error_send}}"
+        >
+          <div class="quote__honeypot" aria-hidden="true">
+            <label for="quote-company">Company</label>
+            <input type="text" id="quote-company" name="company" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="quote__grid">
+            <p class="quote__field">
+              <label for="quote-name">{{form_name}}</label>
+              <input id="quote-name" name="name" type="text" autocomplete="name" required />
+              <span class="quote__error" id="quote-name-error" role="alert"></span>
+            </p>
+            <p class="quote__field">
+              <label for="quote-email">{{form_email}}</label>
+              <input id="quote-email" name="email" type="email" autocomplete="email" required />
+              <span class="quote__error" id="quote-email-error" role="alert"></span>
+            </p>
+            <p class="quote__field">
+              <label for="quote-phone">{{form_phone}}</label>
+              <input id="quote-phone" name="phone" type="tel" autocomplete="tel" required />
+              <span class="quote__error" id="quote-phone-error" role="alert"></span>
+            </p>
+            <p class="quote__field quote__field--wide">
+              <label for="quote-address">{{form_address}}</label>
+              <input id="quote-address" name="address" type="text" autocomplete="street-address" required />
+              <span class="quote__error" id="quote-address-error" role="alert"></span>
+            </p>
+            <p class="quote__field quote__field--wide">
+              <label for="quote-listing">{{form_listing}}</label>
+              <input id="quote-listing" name="listing_url" type="url" inputmode="url" placeholder="{{form_listing_placeholder}}" autocomplete="url" required />
+              <span class="quote__error" id="quote-listing-error" role="alert"></span>
+            </p>
+          </div>
+
+          <p class="quote__note">{{form_note}}</p>
+          <p id="quote-status" class="quote__status" role="status" hidden></p>
+          <button class="quote__submit" type="submit">{{form_submit}}</button>
+        </form>
       </section>
     </main>
 
     <footer class="site-footer">
       <span>{{footer}}</span>
-      <a href="mailto:{{email}}">{{email}}</a>
+      <nav class="footer-links" aria-label="{{footer_nav_label}}">
+        <a href="{{privacy_path}}">{{privacy_link}}</a>
+        {{cookieSettingsLink}}
+        <a href="mailto:{{email}}">{{email}}</a>
+      </nav>
     </footer>
+
+    {{consentBanner}}
+    {{pageScripts}}
   </body>
 </html>
