@@ -23,13 +23,13 @@
       <a class="brand" href="{{path}}">
         <img
           class="brand__logo"
-          src="{{assetPrefix}}assets/brand/suiteframe-horizontal.png"
+          src="{{assetPrefix}}assets/brand/suiteframe-wordmark-light.png"
           alt="Suiteframe"
-          width="756"
-          height="141"
+          width="399"
+          height="86"
         />
       </a>
-      <div class="nav-end">
+      <nav class="nav-end">
         <ul class="langs" aria-label="Language">
           <li>
             <a href="/" hreflang="en" {{langCurrentEn}}>{{lang_en}}</a>
@@ -42,13 +42,31 @@
           </li>
         </ul>
         <a class="nav-contact" href="#contact">{{nav_contact}}</a>
-      </div>
+      </nav>
     </header>
 
     <main id="main">
       <section class="hero" aria-label="Suiteframe">
         <div class="hero__media">
           <picture>
+            <source
+              media="(max-width: 720px)"
+              type="image/avif"
+              srcset="{{assetPrefix}}assets/img/exterior-portrait-800.avif 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.avif 1600w"
+              sizes="100vw"
+            />
+            <source
+              media="(max-width: 720px)"
+              type="image/webp"
+              srcset="{{assetPrefix}}assets/img/exterior-portrait-800.webp 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <source
+              media="(max-width: 720px)"
+              type="image/jpeg"
+              srcset="{{assetPrefix}}assets/img/exterior-portrait-800.jpg 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.jpg 1600w"
+              sizes="100vw"
+            />
             <source
               type="image/avif"
               srcset="{{assetPrefix}}assets/img/exterior-dusk-800.avif 800w, {{assetPrefix}}assets/img/exterior-dusk-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-dusk-2400.avif 2400w"
@@ -60,12 +78,13 @@
               sizes="100vw"
             />
             <img
+              class="hero__img"
               src="{{assetPrefix}}assets/img/exterior-dusk-1600.jpg"
               srcset="{{assetPrefix}}assets/img/exterior-dusk-800.jpg 800w, {{assetPrefix}}assets/img/exterior-dusk-1600.jpg 1600w, {{assetPrefix}}assets/img/exterior-dusk-2400.jpg 2400w"
               sizes="100vw"
               alt="{{hero_alt}}"
               width="1600"
-              height="1000"
+              height="900"
               fetchpriority="high"
             />
           </picture>
@@ -73,6 +92,8 @@
         </div>
         <div class="hero__copy">
           <h1 class="hero__line">{{hero_line}}</h1>
+          <p class="hero__sub">{{hero_sub}}</p>
+          <a class="hero__cta" href="#contact">{{hero_cta}}</a>
         </div>
       </section>
 
