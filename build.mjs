@@ -344,27 +344,9 @@ await fs.copyFile(
   path.join(ROOT, "src", "form.js"),
   path.join(DIST, "assets", "form.js")
 );
-await fs.copyFile(
-  path.join(ROOT, "src", "trail.js"),
-  path.join(DIST, "assets", "trail.js")
-);
-await fs.mkdir(path.join(DIST, "assets", "trail"), { recursive: true });
-await fs.copyFile(
-  path.join(ROOT, "src", "trail", "suiteframe-line-coordinates.json"),
-  path.join(DIST, "assets", "trail", "suiteframe-line-coordinates.json")
-);
-await fs.copyFile(
-  path.join(ROOT, "src", "trail", "suiteframe-line.svg"),
-  path.join(DIST, "assets", "trail", "suiteframe-line.svg")
-);
-await fs.copyFile(
-  path.join(ROOT, "src", "trail", "CURSOR-HANDOFF.md"),
-  path.join(DIST, "assets", "trail", "CURSOR-HANDOFF.md")
-);
 await copyDir(path.join(ROOT, "assets", "fonts"), path.join(DIST, "assets", "fonts"));
 await copyDir(path.join(ROOT, "assets", "img"), path.join(DIST, "assets", "img"));
 await copyDir(path.join(ROOT, "assets", "brand"), path.join(DIST, "assets", "brand"));
-await copyDir(path.join(ROOT, "assets", "trail-ink"), path.join(DIST, "assets", "trail-ink"));
 if (hasDemoVideo) {
   await fs.mkdir(path.join(DIST, "assets", "video"), { recursive: true });
   await fs.copyFile(

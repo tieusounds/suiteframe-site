@@ -73,14 +73,6 @@
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: "Caveat";
-  src: url("fonts/caveat-500.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --color-paper: oklch(14.5% 0.012 173);
   --color-paper-2: oklch(18% 0.014 173);
@@ -92,7 +84,6 @@
   --color-accent-ink: oklch(96% 0.01 85);
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
   --font-body: "Switzer", ui-sans-serif, sans-serif;
-  --font-hand: "Caveat", "Segoe Script", "Comic Sans MS", cursive;
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.75rem;
@@ -179,97 +170,6 @@ a:hover {
 .skip:focus {
   left: var(--pad-x);
   top: var(--space-sm);
-}
-
-/* —— Draw-trail: exact chalk pixels, landmark-aligned, obstacle-punched —— */
-.draw-trail {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  pointer-events: none;
-  z-index: 8;
-  overflow: hidden;
-  contain: layout paint;
-}
-
-.draw-trail__svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.draw-trail__path {
-  stroke: oklch(97% 0.012 85 / 0.9);
-  stroke-width: 2.15;
-  vector-effect: non-scaling-stroke;
-}
-
-.draw-trail__debug-anchor {
-  fill: none;
-  stroke: oklch(70% 0.18 25 / 0.7);
-  stroke-width: 1;
-}
-
-.draw-trail__debug-region {
-  fill: oklch(80% 0.12 145 / 0.06);
-  stroke: oklch(80% 0.12 145 / 0.45);
-  stroke-width: 1;
-  stroke-dasharray: 4 3;
-}
-
-.draw-trail__debug-label {
-  fill: oklch(85% 0.08 145 / 0.9);
-  font-size: 11px;
-  font-family: ui-monospace, monospace;
-}
-
-.trail-thanks {
-  margin: 0;
-  padding: clamp(2.5rem, 7vh, 5rem) var(--pad-x) clamp(2rem, 5vh, 3.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15em;
-  font-family: var(--font-hand);
-  font-weight: 500;
-  color: oklch(97% 0.01 85 / 0.92);
-  line-height: 1.15;
-  opacity: 0;
-  transition: opacity 0.01s linear;
-  will-change: opacity, transform;
-}
-
-.trail-thanks__line {
-  margin: 0;
-  font-size: clamp(1.85rem, 3.4vw, 2.65rem);
-}
-
-.trail-thanks__mark {
-  margin: 0.35rem 0 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
-}
-
-.trail-thanks__house {
-  color: inherit;
-  flex: 0 0 auto;
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .trail-thanks {
-    align-items: center;
-    text-align: center;
-  }
-
-  .trail-thanks__line {
-    font-size: clamp(1.55rem, 6.2vw, 2rem);
-  }
 }
 
 /* —— Nav over hero photo —— */

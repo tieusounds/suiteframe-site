@@ -70,8 +70,6 @@
   <body>
     <a class="skip" href="#main">{{skip}}</a>
 
-    <div class="draw-trail" aria-hidden="true"></div>
-
     <header class="site-nav">
       <a class="brand" href="{{path}}">
         <img
@@ -152,7 +150,7 @@
 
       <section class="section" id="what" aria-labelledby="what-title">
         <h2 class="visually-hidden" id="what-title">{{what_label}}</h2>
-        <p class="statement" data-trail="what">{{what_body}}</p>
+        <p class="statement">{{what_body}}</p>
       </section>
 
       <section class="section demo" id="demo" aria-labelledby="demo-title">
@@ -160,7 +158,7 @@
         <p class="statement demo__lead">{{demo_lead}}</p>
         <p class="demo__sub">{{demo_sub}}</p>
         <div class="demo__grid">
-          <div class="demo__photos" data-trail="photos">
+          <div class="demo__photos">
             <p class="demo__caption">{{demo_photos_label}}</p>
             <div class="demo__thumbs">
               <img src="{{assetPrefix}}assets/img/demo-01-800.jpg" alt="{{demo_01_alt}}" width="800" height="450" loading="lazy" />
@@ -171,9 +169,9 @@
               <img src="{{assetPrefix}}assets/img/demo-06-800.jpg" alt="{{demo_06_alt}}" width="800" height="450" loading="lazy" />
             </div>
           </div>
-          <div class="demo__video" data-trail="video-col">
+          <div class="demo__video">
             <p class="demo__caption">{{demo_video_label}}</p>
-            <div class="demo__frame" data-trail="video">
+            <div class="demo__frame">
               {{demoMedia}}
               <span class="demo__tag">{{demo_video_tag}}</span>
             </div>
@@ -202,47 +200,47 @@
           </li>
         </ol>
         <p class="how__closer">{{how_closer}}</p>
-        <a class="how__cta" href="#contact" data-trail="how-cta">{{how_cta}}</a>
+        <a class="how__cta" href="#contact">{{how_cta}}</a>
       </section>
 
-      <section class="gallery" id="gallery" aria-labelledby="gallery-title" data-trail="gallery">
+      <section class="gallery" id="gallery" aria-labelledby="gallery-title">
         <h2 class="visually-hidden" id="gallery-title">{{gallery_label}}</h2>
-        <figure class="gallery__item" data-image="living" data-trail="tile">
+        <figure class="gallery__item" data-image="living">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/living-800.avif 800w, {{assetPrefix}}assets/img/living-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/living-800.webp 800w, {{assetPrefix}}assets/img/living-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <img src="{{assetPrefix}}assets/img/living-1600.jpg" alt="{{living_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="bedroom" data-trail="tile">
+        <figure class="gallery__item" data-image="bedroom">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/bedroom-800.avif 800w, {{assetPrefix}}assets/img/bedroom-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/bedroom-800.webp 800w, {{assetPrefix}}assets/img/bedroom-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <img src="{{assetPrefix}}assets/img/bedroom-1600.jpg" alt="{{bedroom_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="kitchen" data-trail="tile">
+        <figure class="gallery__item" data-image="kitchen">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/kitchen-800.avif 800w, {{assetPrefix}}assets/img/kitchen-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/kitchen-800.webp 800w, {{assetPrefix}}assets/img/kitchen-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <img src="{{assetPrefix}}assets/img/kitchen-1600.jpg" alt="{{kitchen_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="portrait" data-trail="tile">
+        <figure class="gallery__item" data-image="portrait">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.avif 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.webp 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <img src="{{assetPrefix}}assets/img/exterior-portrait-1600.jpg" alt="{{portrait_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item gallery__item--wide" data-image="terrace" data-trail="tile">
+        <figure class="gallery__item gallery__item--wide" data-image="terrace">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/terrace-800.avif 800w, {{assetPrefix}}assets/img/terrace-1600.avif 1600w, {{assetPrefix}}assets/img/terrace-2400.avif 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/terrace-800.webp 800w, {{assetPrefix}}assets/img/terrace-1600.webp 1600w, {{assetPrefix}}assets/img/terrace-2400.webp 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <img src="{{assetPrefix}}assets/img/terrace-1600.jpg" alt="{{terrace_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item gallery__item--wide" data-image="snow" data-trail="tile">
+        <figure class="gallery__item gallery__item--wide" data-image="snow">
           <picture>
             <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-snow-800.avif 800w, {{assetPrefix}}assets/img/exterior-snow-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.avif 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
             <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-snow-800.webp 800w, {{assetPrefix}}assets/img/exterior-snow-1600.webp 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.webp 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
@@ -253,10 +251,10 @@
 
       <section class="section" id="pricing" aria-labelledby="pricing-title">
         <h2 class="visually-hidden" id="pricing-title">{{pricing_label}}</h2>
-        <p class="pricing-line" data-trail="pricing">{{pricing_body}}</p>
+        <p class="pricing-line">{{pricing_body}}</p>
       </section>
 
-      <section class="contact" id="contact" aria-labelledby="contact-title" data-trail="contact">
+      <section class="contact" id="contact" aria-labelledby="contact-title">
         <h2 class="visually-hidden" id="contact-title">{{contact_label}}</h2>
         <div class="contact__intro">
           <p class="contact__hint">{{contact_hint}}</p>
@@ -318,24 +316,6 @@
         </form>
       </section>
 
-      <div class="trail-thanks" data-trail="thanks" aria-hidden="true">
-        <p class="trail-thanks__line">{{trail_thanks_1}}</p>
-        <p class="trail-thanks__line">{{trail_thanks_2}}</p>
-        <p class="trail-thanks__mark">
-          <span>{{trail_thanks_3}}</span>
-          <svg class="trail-thanks__house" viewBox="0 0 40 36" width="28" height="25" focusable="false">
-            <path
-              d="M4 18 L20 4 L36 18 V33 H24 V22 H16 V33 H4 Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linejoin="round"
-              stroke-linecap="round"
-            />
-            <circle cx="20" cy="26" r="2.2" fill="currentColor" />
-          </svg>
-        </p>
-      </div>
     </main>
 
     <footer class="site-footer">
@@ -348,7 +328,6 @@
     </footer>
 
     {{consentBanner}}
-    <script src="{{assetPrefix}}assets/trail.js" defer></script>
     {{pageScripts}}
   </body>
 </html>
