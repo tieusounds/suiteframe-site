@@ -1,22 +1,36 @@
-// One continuous chalk stroke, redrawn from live layout boxes.
-// Gesture follows the authored drawings; coordinates come from the page, not PNGs.
-// Thank-you handwriting stays separate DOM.
+// Suiteframe scroll line — handoff SVG centerline mapped to live DOM anchors.
+// Geometry: src/trail/suiteframe-line-coordinates.json (CURSOR-HANDOFF.md).
+// Thank-you handwriting stays separate DOM (.trail-thanks).
 (function () {
   var root = document.querySelector(".draw-trail");
   var thanks = document.querySelector(".trail-thanks");
   if (!root) return;
   if (window.getComputedStyle(root).display === "none") return;
 
-  var reduceMotion =
-    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var motionQuery =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  function prefersReducedMotion() {
+    return !!(motionQuery && motionQuery.matches);
+  }
+  var debug =
+    /(?:\?|&)trailDebug=1(?:&|$)/.test(window.location.search) ||
+    window.localStorage.getItem("sf_trail_debug") === "1";
 
-  var REVEAL_LEAD = 140;
-  var canvas = null;
-  var ctx = null;
-  var spine = [];
-  var segLens = [];
-  var totalLen = 0;
-  var reveal = 0;
+  var REF_W = 2048;
+  var REF_H = 7811;
+  var REVEAL_LEAD = 160;
+
+  var svg = null;
+  var pathEl = null;
+  var debugLayer = null;
+  var pathLength = 1;
+  var regionLens = [];
+  var mapped = [];
+  var regions = [];
+  var coords = null;
+  var revealFn = null;
+  var layoutTimer = 0;
+  var ticking = false;
 
   function el(sel) {
     return document.querySelector(sel);
@@ -42,485 +56,460 @@
     };
   }
 
-  function pt(x, y) {
-    return { x: x, y: y };
-  }
-
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
-
-  function noise(i, salt) {
-    var n = Math.sin(i * 12.9898 + salt * 78.233) * 43758.5453;
-    return n - Math.floor(n);
-  }
-
-  function contentBounds() {
-    var bottom = 0;
-    [el("main"), el(".site-footer"), thanks].forEach(function (node) {
-      var b = box(node);
-      if (b) bottom = Math.max(bottom, b.bottom);
+  function unionBoxes(list) {
+    var out = null;
+    list.forEach(function (b) {
+      if (!b) return;
+      if (!out) {
+        out = {
+          left: b.left,
+          top: b.top,
+          right: b.right,
+          bottom: b.bottom,
+        };
+        return;
+      }
+      out.left = Math.min(out.left, b.left);
+      out.top = Math.min(out.top, b.top);
+      out.right = Math.max(out.right, b.right);
+      out.bottom = Math.max(out.bottom, b.bottom);
     });
+    if (!out) return null;
+    out.width = out.right - out.left;
+    out.height = out.bottom - out.top;
+    out.cx = out.left + out.width / 2;
+    out.cy = out.top + out.height / 2;
+    return out;
+  }
+
+  function padBox(b, pad) {
+    if (!b) return null;
+    var p = pad || 0;
     return {
-      docW: document.documentElement.clientWidth || window.innerWidth,
-      docH: Math.max(bottom + 16, window.innerHeight),
+      left: b.left - p,
+      top: b.top - p,
+      right: b.right + p,
+      bottom: b.bottom + p,
+      width: b.width + p * 2,
+      height: b.height + p * 2,
+      cx: b.cx,
+      cy: b.cy,
     };
   }
 
-  function collectObstacles(pad) {
-    var selectors = [
-      ".site-nav",
-      ".brand",
-      // hero__copy omitted — left gutter must stay clean through the hero
-      ".statement",
-      ".demo__lead",
-      ".demo__sub",
-      ".demo__caption",
-      ".demo__thumbs img",
-      ".demo__frame",
-      ".how__lead",
-      ".how__step",
-      ".how__closer",
-      ".how__cta",
-      ".gallery__item",
-      ".pricing-line",
-      ".contact__intro",
-      ".quote__field",
-      ".quote__note",
-      ".quote__submit",
-      ".quote__honeypot",
-      ".trail-thanks",
-      ".site-footer",
-    ];
-    var out = [];
-    selectors.forEach(function (sel) {
-      els(sel).forEach(function (node) {
-        var b = box(node);
-        if (!b) return;
-        var extra = node.matches(
-          "img, video, .demo__frame, .gallery__item, .quote__submit, .how__cta, .hero__cta"
-        )
-          ? pad * 0.55
-          : 0;
-        out.push({
-          left: b.left - pad - extra,
-          top: b.top - pad - extra,
-          right: b.right + pad + extra,
-          bottom: b.bottom + pad + extra,
-        });
-      });
-    });
-    return out;
-  }
-
-  function hits(obstacles, x, y) {
-    for (var i = 0; i < obstacles.length; i++) {
-      var o = obstacles[i];
-      if (x >= o.left && x <= o.right && y >= o.top && y <= o.bottom) return o;
-    }
-    return null;
-  }
-
-  function pushFree(obstacles, x, y, prefer) {
-    if (!hits(obstacles, x, y)) return pt(x, y);
-    var dirs = prefer || [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1],
-      [1, 1],
-      [-1, 1],
-      [1, -1],
-      [-1, -1],
-    ];
-    for (var dist = 4; dist <= 96; dist += 4) {
-      for (var d = 0; d < dirs.length; d++) {
-        var nx = x + dirs[d][0] * dist;
-        var ny = y + dirs[d][1] * dist;
-        if (!hits(obstacles, nx, ny)) return pt(nx, ny);
-      }
-    }
-    return pt(x, y);
-  }
-
-  function gapX(a, b) {
-    if (!a || !b) return null;
-    return (a.right + b.left) / 2;
-  }
-
-  function gapY(a, b) {
-    if (!a || !b) return null;
-    return (a.bottom + b.top) / 2;
-  }
-
-  // Choreography from the hand drawings, resolved against live boxes.
-  function buildSpine(docW, docH, obstacles) {
-    var narrow = window.matchMedia("(max-width: 768px)").matches;
-    var lg = Math.max(14, Math.min(36, docW * 0.028));
-    var rg = docW - lg;
-    var pts = [];
-
-    function add(x, y, prefer, free) {
-      // free=true: keep authored gutter points (no obstacle shove → no zig-zag spikes)
-      var p = free ? pt(x, y) : pushFree(obstacles, x, y, prefer);
-      var j = (noise(pts.length, 1.7) - 0.5) * 2.2;
-      var j2 = (noise(pts.length, 4.1) - 0.5) * 1.8;
-      pts.push(pt(p.x + j, p.y + j2));
-    }
-
-    var what = box(el('[data-trail="what"]'));
-    var photos = box(el('[data-trail="photos"]'));
-    var video = box(el('[data-trail="video"]'));
-    var howCta = box(el('[data-trail="how-cta"]'));
-    var howLead = box(el(".how__lead"));
-    var howCloser = box(el(".how__closer"));
-    var pricing = box(el('[data-trail="pricing"]'));
-    var contact = box(el('[data-trail="contact"]'));
-    var submit = box(el(".quote__submit"));
-    var thanksB = box(thanks);
-    var tiles = els('[data-trail="tile"]').map(box).filter(Boolean);
-    var demoLead = box(el(".demo__lead"));
-    var demoSub = box(el(".demo__sub"));
-    var hero = box(el(".hero"));
-
-    // 1. Left gutter from top → into What (gutter stays free — no shove spikes)
-    add(lg, 8, null, true);
-    if (hero) {
-      add(lg + 2, hero.top + hero.height * 0.55, null, true);
-      add(lg + 2, hero.bottom - 8, null, true);
-    }
-    if (what) {
-      // Open U fully below the statement; exit stays on that under-rail
-      var wp = narrow ? 28 : 44;
-      var yUnder = what.bottom + wp;
-      var xSide = Math.max(lg, what.left - wp);
-      add(lg + 4, what.top - 20, null, true);
-      add(xSide, what.top + 4, null, true);
-      add(xSide, yUnder, null, true);
-      add(what.cx, yUnder, null, true);
-      add(what.right + wp * 0.6, yUnder, null, true);
-      add(lg + 10, yUnder + 8, null, true);
-    }
-
-    // 2. Demo: one continuous wind around photos then video (not two closed frames)
-    var underDemo =
-      demoSub && demoSub.bottom
-        ? demoSub.bottom + 14
-        : demoLead
-          ? demoLead.bottom + 18
-          : null;
-    if (underDemo != null) {
-      add(lg + 8, underDemo);
-    }
-
-    var thumbs = box(el(".demo__thumbs"));
-    var frame = box(el(".demo__frame")) || video;
-    var photoBlock = thumbs || photos;
-    if (photoBlock && frame && !narrow) {
-      var mid = gapX(photoBlock, frame);
-      var padP = 16;
-      var padV = 18;
-      var yEnter = underDemo != null ? underDemo : photoBlock.top - 14;
-      var yUnderP = photoBlock.bottom + padP;
-      var yUnderV = frame.bottom + padV;
-      // Simple continuous wind: left → under photos → up gutter → over/right/under video → exit
-      add(lg + 8, yEnter, null, true);
-      add(photoBlock.left - padP, yEnter, null, true);
-      add(photoBlock.left - padP, yUnderP, null, true);
-      add(mid, yUnderP, null, true);
-      add(mid, frame.top - padV, null, true);
-      add(frame.right + padV, frame.top - padV, null, true);
-      add(frame.right + padV, yUnderV, null, true);
-      add(mid, yUnderV, null, true);
-      add(lg + 8, yUnderV + 24, null, true);
-    } else if (frame) {
-      add(lg + 8, frame.top - 14, null, true);
-      add(frame.left - 12, frame.top - 10);
-      add(frame.right + 14, frame.top - 8);
-      add(frame.right + 14, frame.bottom + 10);
-      add(lg + 8, frame.bottom + 28, null, true);
-    }
-
-    // 3. How: left gutter clear of lead, under closer+CTA, then across above gallery
-    if (howLead) {
-      add(lg + 4, howLead.top - 14, null, true);
-      add(lg + 4, howLead.bottom + 16, null, true);
-    }
-    if (howCloser) {
-      add(lg + 8, howCloser.top - 6, null, true);
-      add(howCloser.left - 12, howCloser.bottom + 14);
-    }
-    if (howCta) {
-      add(howCta.left - 10, howCta.bottom + 18);
-      add(howCta.right + 24, howCta.bottom + 22);
-    }
-
-    var galTop = tiles.length
-      ? Math.min.apply(
-          null,
-          tiles.map(function (t) {
-            return t.top;
-          })
-        )
-      : null;
-    if (galTop != null) {
-      var yAbove = galTop - 22;
-      add(lg + 10, yAbove, null, true);
-      add(docW * 0.38, yAbove - 2);
-      add(docW * 0.62, yAbove);
-      add(docW * 0.86, yAbove + 2);
-    }
-
-    // 4. Gallery seams (iPad drawing: down mid/right gutter, across, down left/mid)
-    if (tiles.length >= 6 && !narrow) {
-      var sorted = tiles.slice().sort(function (a, b) {
-        var dy = a.top - b.top;
-        if (Math.abs(dy) > 40) return dy;
-        return a.left - b.left;
-      });
-      var rows = [];
-      sorted.forEach(function (t) {
-        var last = rows[rows.length - 1];
-        if (!last || Math.abs(t.top - last[0].top) > 48) rows.push([t]);
-        else last.push(t);
-      });
-      rows.forEach(function (row) {
-        row.sort(function (a, b) {
-          return a.left - b.left;
-        });
-      });
-      if (rows[0] && rows[0].length >= 3) {
-        var r0 = rows[0];
-        var vx = gapX(r0[1], r0[2]);
-        add(vx, r0[0].top - 6);
-        add(vx + 2, r0[0].cy);
-        if (rows[1] && rows[1].length >= 2) {
-          var r1 = rows[1];
-          var hy = gapY(r0[0], r1[0]);
-          add(vx, hy);
-          var vx2 = gapX(r1[0], r1[1]);
-          add(vx2, hy + 2);
-          add(vx2 - 2, r1[0].cy);
-          add(vx2, r1[0].bottom + 14);
-        } else {
-          add(vx, r0[0].bottom + 18);
-        }
-      }
-      var galBottom = Math.max.apply(
-        null,
-        tiles.map(function (t) {
-          return t.bottom;
-        })
-      );
-      add(docW * 0.3, galBottom + 26);
-      add(lg + 22, galBottom + 48);
-    } else if (tiles.length) {
-      tiles.forEach(function (t, i) {
-        if (i === 0) add(lg + 8, t.top - 10);
-        add(lg + 6, t.bottom + 8);
-      });
-    }
-
-    // 5. Open U under pricing (flat under-edge), then sweep to right gutter
-    if (pricing) {
-      var pp = narrow ? 28 : 42;
-      var xLeft = Math.max(lg + 8, pricing.left - pp);
-      var yPrice = pricing.bottom + pp;
-      add(xLeft, pricing.top - 12, null, true);
-      add(xLeft, yPrice, null, true);
-      add(pricing.right + pp * 0.5, yPrice, null, true);
-      add(rg - 18, yPrice + 40, null, true);
-    }
-
-    if (contact) {
-      add(rg - 16, contact.top + 48, null, true);
-      add(rg - 18, contact.cy, null, true);
-    }
-
-    // 6. Right gutter past submit → under button → into thanks (no shove steps)
-    if (submit) {
-      add(rg - 16, submit.top - 24, null, true);
-      add(rg - 14, submit.bottom + 16, null, true);
-      add(submit.cx, submit.bottom + 28, null, true);
-      add(Math.max(lg + 32, submit.left), submit.bottom + 36, null, true);
-    }
-
-    if (thanksB) {
-      add(thanksB.left + 36, thanksB.top - 14, null, true);
-      add(thanksB.left + 18, thanksB.top + 2, null, true);
-    } else {
-      add(docW * 0.32, docH - 90, null, true);
-    }
-
-    return pts;
-  }
-
-  function densify(points, step) {
-    // Linear only — Catmull bows cut through text boxes
-    if (points.length < 2) return points.slice();
-    var out = [points[0]];
-    for (var i = 1; i < points.length; i++) {
-      var a = points[i - 1];
-      var b = points[i];
-      var dist = Math.hypot(b.x - a.x, b.y - a.y);
-      var n = Math.max(1, Math.ceil(dist / step));
-      for (var k = 1; k <= n; k++) {
-        var t = k / n;
-        out.push(pt(lerp(a.x, b.x, t), lerp(a.y, b.y, t)));
-      }
-    }
-    return out;
-  }
-
-  function wobble(points, amp) {
-    var out = [];
+  function bboxOf(points) {
+    var minX = Infinity;
+    var minY = Infinity;
+    var maxX = -Infinity;
+    var maxY = -Infinity;
     for (var i = 0; i < points.length; i++) {
-      var p = points[i];
-      var prev = points[Math.max(0, i - 1)];
-      var next = points[Math.min(points.length - 1, i + 1)];
-      var dx = next.x - prev.x;
-      var dy = next.y - prev.y;
-      var len = Math.hypot(dx, dy) || 1;
-      var nx = -dy / len;
-      var ny = dx / len;
-      var n1 = (noise(i, 2.2) - 0.5) * 2;
-      var n2 = (noise(i, 9.7) - 0.5) * 2;
-      var a = amp * (0.55 + 0.45 * Math.sin(i * 0.37));
-      out.push(
-        pt(p.x + nx * n1 * a + nx * n2 * a * 0.35, p.y + ny * n1 * a + ny * n2 * a * 0.35)
-      );
+      var x = points[i][0];
+      var y = points[i][1];
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
     }
-    return out;
+    return {
+      left: minX,
+      top: minY,
+      right: maxX,
+      bottom: maxY,
+      width: Math.max(1, maxX - minX),
+      height: Math.max(1, maxY - minY),
+    };
   }
 
-  function breakStraights(points, maxStraight) {
-    var out = [points[0]];
+  function assetUrl(name) {
+    var script = document.querySelector('script[src*="trail.js"]');
+    var src = script && script.getAttribute("src");
+    if (src) {
+      return src.replace(/trail\.js(?:\?.*)?$/, "trail/" + name);
+    }
+    return "/assets/trail/" + name;
+  }
+
+  function ensureSvg() {
+    if (svg) return;
+    root.innerHTML = "";
+    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "draw-trail__svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+
+    pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathEl.setAttribute("id", "suiteframe-scroll-line");
+    pathEl.setAttribute("class", "draw-trail__path");
+    pathEl.setAttribute("fill", "none");
+    pathEl.setAttribute("stroke-linecap", "round");
+    pathEl.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(pathEl);
+
+    if (debug) {
+      debugLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      debugLayer.setAttribute("class", "draw-trail__debug");
+      svg.appendChild(debugLayer);
+    }
+
+    root.appendChild(svg);
+  }
+
+  function preparePath(path) {
+    var length = path.getTotalLength();
+    if (!isFinite(length) || length < 1) length = 1;
+    path.style.strokeDasharray = length + " " + length;
+    return {
+      length: length,
+      set: function (progress) {
+        var p = Math.min(1, Math.max(0, progress));
+        path.style.strokeDashoffset = String(length * (1 - p));
+        path.style.opacity = p === 0 ? "0" : "1";
+      },
+    };
+  }
+
+  function pointsToD(points) {
+    if (!points.length) return "";
+    var parts = ["M", points[0].x.toFixed(2), points[0].y.toFixed(2)];
     for (var i = 1; i < points.length; i++) {
-      var a = out[out.length - 1];
-      var b = points[i];
-      var dist = Math.hypot(b.x - a.x, b.y - a.y);
-      if (dist > maxStraight) {
-        var mid = pt((a.x + b.x) / 2, (a.y + b.y) / 2);
-        var dx = b.x - a.x;
-        var dy = b.y - a.y;
-        var len = Math.hypot(dx, dy) || 1;
-        var bump = (noise(i, 3.3) - 0.5) * 5.5;
-        mid.x += (-dy / len) * bump;
-        mid.y += (dx / len) * bump;
-        out.push(mid);
-      }
-      out.push(b);
+      parts.push("L", points[i].x.toFixed(2), points[i].y.toFixed(2));
+    }
+    return parts.join(" ");
+  }
+
+  function mapPortion(srcPoints, live) {
+    if (!srcPoints.length || !live) return [];
+    var ref = bboxOf(srcPoints);
+    var out = [];
+    for (var i = 0; i < srcPoints.length; i++) {
+      var nx = (srcPoints[i][0] - ref.left) / ref.width;
+      var ny = (srcPoints[i][1] - ref.top) / ref.height;
+      out.push({
+        x: live.left + nx * live.width,
+        y: live.top + ny * live.height,
+      });
     }
     return out;
   }
 
-  function projectChain(points, obstacles, gutterX, docW) {
-    return points.map(function (p) {
-      // Never shove authored gutter rails — that creates chevron spikes
-      if (p.x < gutterX * 2.2 || p.x > docW - gutterX * 2.2) return p;
-      if (!hits(obstacles, p.x, p.y)) return p;
-      return pushFree(obstacles, p.x, p.y);
+  // Meet prior endpoint, then fade the correction so the rest stays on the live target box.
+  function stitch(chunks) {
+    var out = [];
+    for (var c = 0; c < chunks.length; c++) {
+      var chunk = chunks[c];
+      if (!chunk.length) continue;
+      if (!out.length) {
+        for (var a = 0; a < chunk.length; a++) out.push(chunk[a]);
+        continue;
+      }
+      var prev = out[out.length - 1];
+      var dx = prev.x - chunk[0].x;
+      var dy = prev.y - chunk[0].y;
+      var blend = Math.max(10, Math.floor(chunk.length * 0.2));
+      for (var i = 0; i < chunk.length; i++) {
+        var w = i < blend ? 1 - i / blend : 0;
+        out.push({
+          x: chunk[i].x + dx * w,
+          y: chunk[i].y + dy * w,
+        });
+      }
+    }
+    return out;
+  }
+
+  function liveTargets(narrow) {
+    var docW = document.documentElement.clientWidth || window.innerWidth;
+    var gutter = Math.max(14, Math.min(36, docW * 0.028));
+    var hero = box(el(".hero"));
+    var what = box(el('[data-trail="what"]'));
+    var photos = box(el('[data-trail="photos"]')) || box(el(".demo__thumbs"));
+    var video = box(el('[data-trail="video"]')) || box(el(".demo__frame"));
+    var demoGrid = box(el(".demo__grid")) || unionBoxes([photos, video]);
+    var demoLead = box(el(".demo__lead"));
+    var how = box(el(".how")) || unionBoxes([box(el(".how__lead")), box(el('[data-trail="how-cta"]'))]);
+    var gallery = box(el('[data-trail="gallery"]')) || box(el(".gallery"));
+    var tiles = els('[data-trail="tile"]').map(box).filter(Boolean);
+    var pricing = box(el('[data-trail="pricing"]')) || box(el(".pricing"));
+    var contact = box(el('[data-trail="contact"]')) || box(el(".contact"));
+    var quote = box(el(".quote")) || box(el("form.quote"));
+    var thanksB = box(thanks);
+
+    var pageBottom = Math.max(
+      document.documentElement.scrollHeight,
+      thanksB ? thanksB.bottom + 24 : 0,
+      contact ? contact.bottom + 24 : 0
+    );
+
+    var heroLive = hero
+      ? {
+          left: gutter - 4,
+          top: Math.max(0, hero.top),
+          width: Math.max(28, gutter + 18),
+          height: Math.max(80, hero.height),
+          right: 0,
+          bottom: 0,
+          cx: 0,
+          cy: 0,
+        }
+      : {
+          left: gutter,
+          top: 0,
+          width: 40,
+          height: window.innerHeight,
+        };
+    heroLive.right = heroLive.left + heroLive.width;
+    heroLive.bottom = heroLive.top + heroLive.height;
+
+    var whatPad = narrow ? 28 : 52;
+    var whatLive = padBox(what, whatPad) || {
+      left: gutter,
+      top: heroLive.bottom,
+      width: docW * 0.72,
+      height: 180,
+      right: gutter + docW * 0.72,
+      bottom: heroLive.bottom + 180,
+    };
+
+    var demoPad = narrow ? 16 : 22;
+    var demoCore = demoGrid || unionBoxes([photos, video, demoLead]);
+    var demoLive = padBox(demoCore, demoPad) || whatLive;
+    // Wide demo loop in the reference spans nearly the full page width
+    if (!narrow && demoLive) {
+      demoLive.left = Math.min(demoLive.left, gutter);
+      demoLive.right = Math.max(demoLive.right, docW - gutter);
+      demoLive.width = demoLive.right - demoLive.left;
+    }
+
+    var howPad = narrow ? 20 : 36;
+    var howLive = padBox(how, howPad) || {
+      left: gutter,
+      top: demoLive.bottom,
+      width: docW - gutter * 2,
+      height: 280,
+      right: docW - gutter,
+      bottom: demoLive.bottom + 280,
+    };
+
+    var galPad = narrow ? 12 : 18;
+    var galCore =
+      gallery ||
+      (tiles.length
+        ? unionBoxes(tiles)
+        : null);
+    var galLive = padBox(galCore, galPad) || howLive;
+    if (!narrow && galLive) {
+      galLive.left = Math.min(galLive.left, gutter);
+      galLive.right = Math.max(galLive.right, docW - gutter);
+      galLive.width = galLive.right - galLive.left;
+    }
+
+    var pricePad = narrow ? 24 : 40;
+    var priceLive = padBox(pricing, pricePad) || {
+      left: gutter,
+      top: galLive.bottom + 20,
+      width: docW - gutter * 2,
+      height: 160,
+      right: docW - gutter,
+      bottom: galLive.bottom + 180,
+    };
+
+    var contactCore = unionBoxes([contact, quote, thanksB]);
+    var contactPad = narrow ? 18 : 32;
+    var contactLive = padBox(contactCore, contactPad) || {
+      left: gutter,
+      top: priceLive.bottom,
+      width: docW - gutter * 2,
+      height: 420,
+      right: docW - gutter,
+      bottom: pageBottom,
+    };
+
+    // Narrow: compress horizontal span so stacked gallery still gets a readable route
+    if (narrow) {
+      [whatLive, demoLive, howLive, galLive, priceLive, contactLive].forEach(function (b) {
+        var maxW = docW - gutter * 2;
+        if (b.width > maxW) {
+          b.left = gutter;
+          b.width = maxW;
+          b.right = b.left + b.width;
+        }
+      });
+    }
+
+    return {
+      docW: docW,
+      pageBottom: pageBottom,
+      gutter: gutter,
+      hero: heroLive,
+      what: whatLive,
+      demo: demoLive,
+      how: howLive,
+      gallery: galLive,
+      pricing: priceLive,
+      contact: contactLive,
+      anchors: {
+        hero: hero,
+        what: what,
+        photos: photos,
+        video: video,
+        how: how,
+        gallery: galCore,
+        pricing: pricing,
+        contact: contact,
+        thanks: thanksB,
+      },
+    };
+  }
+
+  // Index ranges into coordinates.points (includes interpreted join samples).
+  var REGION_DEFS = [
+    { id: "hero", i0: 0, i1: 89, target: "hero" },
+    { id: "what", i0: 90, i1: 248, target: "what" },
+    { id: "demo", i0: 249, i1: 610, target: "demo" },
+    { id: "how", i0: 611, i1: 804, target: "how" },
+    { id: "gallery", i0: 805, i1: 948, target: "gallery" },
+    { id: "pricing", i0: 949, i1: 1239, target: "pricing" },
+    { id: "contact", i0: 1240, i1: 1358, target: "contact" },
+  ];
+
+  function clampMapped(points, docW) {
+    var minX = 4;
+    var maxX = Math.max(minX + 8, docW - 4);
+    for (var i = 0; i < points.length; i++) {
+      if (points[i].x < minX) points[i].x = minX;
+      if (points[i].x > maxX) points[i].x = maxX;
+      if (points[i].y < 0) points[i].y = 0;
+    }
+    return points;
+  }
+
+  function buildMapped(points, targets) {
+    var chunks = [];
+    var meta = [];
+    for (var r = 0; r < REGION_DEFS.length; r++) {
+      var def = REGION_DEFS[r];
+      var slice = points.slice(def.i0, def.i1 + 1);
+      var live = targets[def.target];
+      var mappedChunk = mapPortion(slice, live);
+      chunks.push(mappedChunk);
+      meta.push({
+        id: def.id,
+        i0: def.i0,
+        i1: def.i1,
+        live: live,
+        startIndex: 0,
+        endIndex: 0,
+      });
+    }
+    var joined = clampMapped(stitch(chunks), targets.docW);
+    // Recompute region index ranges on the joined polyline
+    var cursor = 0;
+    for (var m = 0; m < meta.length; m++) {
+      var n = chunks[m].length;
+      meta[m].startIndex = cursor;
+      meta[m].endIndex = cursor + Math.max(0, n - 1);
+      cursor += n;
+    }
+    return { points: joined, regions: meta };
+  }
+
+  function measureRegions(points, regionMeta) {
+    var seg = [0];
+    var total = 0;
+    for (var i = 1; i < points.length; i++) {
+      total += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+      seg.push(total);
+    }
+    if (total < 1) total = 1;
+    var lens = regionMeta.map(function (r) {
+      var a = seg[Math.min(r.startIndex, seg.length - 1)] || 0;
+      var b = seg[Math.min(r.endIndex, seg.length - 1)] || a;
+      return {
+        id: r.id,
+        startLen: a,
+        endLen: b,
+        startFrac: a / total,
+        endFrac: b / total,
+        live: r.live,
+      };
+    });
+    return { seg: seg, total: total, regions: lens };
+  }
+
+  function paintDebug(targets) {
+    if (!debug || !debugLayer) return;
+    while (debugLayer.firstChild) debugLayer.removeChild(debugLayer.firstChild);
+    Object.keys(targets.anchors).forEach(function (key) {
+      var b = targets.anchors[key];
+      if (!b) return;
+      var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", String(b.left));
+      rect.setAttribute("y", String(b.top));
+      rect.setAttribute("width", String(b.width));
+      rect.setAttribute("height", String(b.height));
+      rect.setAttribute("class", "draw-trail__debug-anchor");
+      debugLayer.appendChild(rect);
+      var label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("x", String(b.left + 4));
+      label.setAttribute("y", String(b.top + 14));
+      label.setAttribute("class", "draw-trail__debug-label");
+      label.textContent = key;
+      debugLayer.appendChild(label);
+    });
+    REGION_DEFS.forEach(function (def, idx) {
+      var live = targets[def.target];
+      if (!live) return;
+      var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", String(live.left));
+      rect.setAttribute("y", String(live.top));
+      rect.setAttribute("width", String(live.width));
+      rect.setAttribute("height", String(live.height));
+      rect.setAttribute("class", "draw-trail__debug-region");
+      rect.setAttribute("data-region", def.id);
+      debugLayer.appendChild(rect);
     });
   }
 
-  function measure(points) {
-    segLens = [0];
-    totalLen = 0;
-    for (var i = 1; i < points.length; i++) {
-      totalLen += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
-      segLens.push(totalLen);
-    }
-    if (totalLen < 1) totalLen = 1;
-  }
+  function sectionProgress() {
+    if (!regionLens.length) return 0;
+    if (prefersReducedMotion()) return 1;
 
-  function ensureCanvas() {
-    if (canvas) return;
-    root.innerHTML = "";
-    canvas = document.createElement("canvas");
-    canvas.className = "draw-trail__canvas";
-    canvas.setAttribute("aria-hidden", "true");
-    root.appendChild(canvas);
-    ctx = canvas.getContext("2d", { alpha: true });
-  }
+    var viewTop = window.scrollY;
+    var viewBottom = window.scrollY + window.innerHeight + REVEAL_LEAD;
+    var viewMid = window.scrollY + window.innerHeight * 0.55;
+    var maxScroll = Math.max(
+      1,
+      document.documentElement.scrollHeight - window.innerHeight
+    );
+    // Finish slightly before the theoretical max scroll (some engines stop early).
+    var globalT = Math.min(1, window.scrollY / (maxScroll * 0.88));
+    if (globalT >= 0.98) return 1;
 
-  function widthAt(s, narrow) {
-    var base = narrow ? 1.55 : 2.25;
-    var pulse =
-      0.72 +
-      0.28 * Math.sin(s * Math.PI) * (0.8 + 0.2 * Math.sin(s * 14)) +
-      0.1 * Math.sin(s * 31 + 0.8);
-    return base * pulse;
-  }
+    // Path-length windows per section; advance while that live band is in view
+    // (needed for loops that travel upward — not a Y clip mask).
+    var best = 0;
+    for (var i = 0; i < regionLens.length; i++) {
+      var r = regionLens[i];
+      var live = r.live;
+      if (!live) continue;
+      var bandTop = live.top;
+      var bandBottom = live.bottom;
+      var bandH = Math.max(1, bandBottom - bandTop);
 
-  function paintChalk(uptoLen) {
-    if (!ctx || spine.length < 2) return;
-    var narrow = window.matchMedia("(max-width: 768px)").matches;
-    var bounds = contentBounds();
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var local = (viewMid - bandTop) / bandH;
+      local = Math.min(1, Math.max(0, local));
+      var frac = r.startFrac + (r.endFrac - r.startFrac) * local;
 
-    root.style.width = bounds.docW + "px";
-    root.style.height = bounds.docH + "px";
-    canvas.width = Math.round(bounds.docW * dpr);
-    canvas.height = Math.round(bounds.docH * dpr);
-    canvas.style.width = bounds.docW + "px";
-    canvas.style.height = bounds.docH + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, bounds.docW, bounds.docH);
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    var end = uptoLen;
-    if (end <= 0) return;
-
-    // Continuous path first (one stroke — avoids corner “seams”)
-    ctx.beginPath();
-    var started = false;
-    var lastI = 0;
-    for (var i = 0; i < spine.length; i++) {
-      if (segLens[i] > end) break;
-      lastI = i;
-      if (!started) {
-        ctx.moveTo(spine[i].x, spine[i].y);
-        started = true;
-      } else {
-        ctx.lineTo(spine[i].x, spine[i].y);
+      if (viewBottom > bandTop) {
+        best = Math.max(best, frac);
+      }
+      if (viewTop + window.innerHeight * 0.35 > bandBottom) {
+        best = Math.max(best, r.endFrac);
       }
     }
-    if (started) {
-      var midS = segLens[lastI] / (2 * totalLen);
-      ctx.strokeStyle = "rgba(248, 246, 240, 0.9)";
-      ctx.lineWidth = widthAt(Math.min(0.85, Math.max(0.2, midS + 0.35)), narrow);
-      ctx.stroke();
-    }
 
-    // Light pressure accents along the same spine (short overlaps, same centerline)
-    for (var j = 1; j <= lastI; j++) {
-      if (j % 3 !== 0) continue;
-      var s = segLens[j] / totalLen;
-      ctx.beginPath();
-      ctx.moveTo(spine[j - 1].x, spine[j - 1].y);
-      ctx.lineTo(spine[j].x, spine[j].y);
-      ctx.strokeStyle = "rgba(255, 252, 245, 0.35)";
-      ctx.lineWidth = widthAt(s, narrow) * 0.55;
-      ctx.stroke();
-    }
-  }
-
-  function revealLength() {
-    if (!spine.length) return 0;
-    if (reduceMotion) return totalLen;
-    var revealY = window.scrollY + window.innerHeight + REVEAL_LEAD;
-    // Tip of chalk follows the farthest spine point still above revealY
-    var best = 0;
-    for (var i = 0; i < spine.length; i++) {
-      if (spine[i].y <= revealY) best = segLens[i];
-      else break;
-    }
-    // Also advance with overall scroll so long horizontal runs keep drawing
-    var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    var scrollP = maxScroll > 0 ? window.scrollY / maxScroll : 1;
-    var byScroll = totalLen * Math.min(1, scrollP / 0.92);
-    return Math.max(best, byScroll * 0.35 + best * 0.65);
+    // Monotonic global floor so the stroke always finishes by page end
+    return Math.min(1, Math.max(best, globalT));
   }
 
   function setThanks(p) {
@@ -532,33 +521,49 @@
   }
 
   function draw() {
-    var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    var p = maxScroll > 0 ? window.scrollY / maxScroll : 1;
-    var len = revealLength();
-    reveal = len / totalLen;
-    paintChalk(len);
-    setThanks(p < 0.9 ? 0 : (p - 0.9) / 0.1);
+    if (!revealFn) return;
+    var p = sectionProgress();
+    revealFn.set(p);
+    var maxScroll = Math.max(
+      1,
+      document.documentElement.scrollHeight - window.innerHeight
+    );
+    var scrollP = window.scrollY / maxScroll;
+    setThanks(scrollP < 0.9 ? 0 : (scrollP - 0.9) / 0.1);
   }
 
   function layout() {
-    ensureCanvas();
-    var bounds = contentBounds();
-    var pad = window.matchMedia("(max-width: 768px)").matches ? 12 : 16;
-    var obstacles = collectObstacles(pad);
+    if (!coords || !coords.points) return;
+    ensureSvg();
+    var narrow = window.matchMedia("(max-width: 768px)").matches;
+    var targets = liveTargets(narrow);
+    var built = buildMapped(coords.points, targets);
+    mapped = built.points;
+    regions = built.regions;
 
-    var raw = buildSpine(bounds.docW, bounds.docH, obstacles);
-    raw = densify(raw, 12);
-    raw = wobble(raw, 1.8);
-    raw = breakStraights(raw, 22);
-    raw = densify(raw, 8);
-    raw = wobble(raw, 0.85);
-    var gutterX = Math.max(14, Math.min(36, bounds.docW * 0.028));
-    spine = projectChain(raw, obstacles, gutterX, bounds.docW);
-    measure(spine);
+    var measured = measureRegions(mapped, regions);
+    regionLens = measured.regions;
+    pathLength = measured.total;
+
+    var docH = Math.max(targets.pageBottom, window.innerHeight);
+    root.style.width = targets.docW + "px";
+    root.style.height = docH + "px";
+    svg.setAttribute("viewBox", "0 0 " + targets.docW + " " + docH);
+    svg.setAttribute("width", String(targets.docW));
+    svg.setAttribute("height", String(docH));
+
+    pathEl.setAttribute("d", pointsToD(mapped));
+    revealFn = preparePath(pathEl);
+    pathLength = revealFn.length;
+    paintDebug(targets);
     draw();
   }
 
-  var ticking = false;
+  function scheduleLayout() {
+    clearTimeout(layoutTimer);
+    layoutTimer = setTimeout(layout, 80);
+  }
+
   function onScroll() {
     if (ticking) return;
     ticking = true;
@@ -568,25 +573,51 @@
     });
   }
 
-  var layoutTimer = 0;
-  function scheduleLayout() {
-    clearTimeout(layoutTimer);
-    layoutTimer = setTimeout(layout, 80);
+  function boot(data) {
+    coords = data;
+    REF_W = data.width || REF_W;
+    REF_H = data.height || REF_H;
+    if (thanks) {
+      thanks.style.opacity = prefersReducedMotion() ? "1" : "0";
+    }
+    layout();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleLayout);
+    window.addEventListener("load", layout);
+    if (motionQuery && motionQuery.addEventListener) {
+      motionQuery.addEventListener("change", function () {
+        layout();
+      });
+    }
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(scheduleLayout);
+      ro.observe(document.body);
+      [
+        ".hero",
+        '[data-trail="what"]',
+        ".demo__grid",
+        ".how",
+        ".gallery",
+        '[data-trail="pricing"]',
+        '[data-trail="contact"]',
+        ".trail-thanks",
+      ].forEach(function (sel) {
+        var node = el(sel);
+        if (node) ro.observe(node);
+      });
+    }
+    Array.prototype.forEach.call(document.images, function (img) {
+      if (!img.complete) img.addEventListener("load", scheduleLayout, { once: true });
+    });
   }
 
-  if (thanks) {
-    thanks.style.opacity = reduceMotion ? "1" : "0";
-  }
-
-  layout();
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", scheduleLayout);
-  window.addEventListener("load", layout);
-
-  if ("ResizeObserver" in window) {
-    new ResizeObserver(scheduleLayout).observe(document.body);
-  }
-  Array.prototype.forEach.call(document.images, function (img) {
-    if (!img.complete) img.addEventListener("load", scheduleLayout, { once: true });
-  });
+  fetch(assetUrl("suiteframe-line-coordinates.json"))
+    .then(function (res) {
+      if (!res.ok) throw new Error("trail coordinates HTTP " + res.status);
+      return res.json();
+    })
+    .then(boot)
+    .catch(function (err) {
+      console.warn("[suiteframe trail]", err);
+    });
 })();

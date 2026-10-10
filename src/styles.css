@@ -193,11 +193,37 @@ a:hover {
   contain: layout paint;
 }
 
-.draw-trail__canvas {
+.draw-trail__svg {
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.9;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.draw-trail__path {
+  stroke: oklch(97% 0.012 85 / 0.9);
+  stroke-width: 2.15;
+  vector-effect: non-scaling-stroke;
+}
+
+.draw-trail__debug-anchor {
+  fill: none;
+  stroke: oklch(70% 0.18 25 / 0.7);
+  stroke-width: 1;
+}
+
+.draw-trail__debug-region {
+  fill: oklch(80% 0.12 145 / 0.06);
+  stroke: oklch(80% 0.12 145 / 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.draw-trail__debug-label {
+  fill: oklch(85% 0.08 145 / 0.9);
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
 }
 
 .trail-thanks {
