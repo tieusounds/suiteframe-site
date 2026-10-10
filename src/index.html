@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="{{lang}}" dir="{{dir}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+    <meta name="description" content="{{description}}" />
+    <meta name="theme-color" content="#121816" />
+    <link rel="canonical" href="https://suiteframe.ch{{path}}" />
+    <link rel="alternate" hreflang="en" href="https://suiteframe.ch/" />
+    <link rel="alternate" hreflang="de" href="https://suiteframe.ch/de/" />
+    <link rel="alternate" hreflang="fr" href="https://suiteframe.ch/fr/" />
+    <link rel="alternate" hreflang="x-default" href="https://suiteframe.ch/" />
+    <link rel="icon" href="{{assetPrefix}}assets/brand/suiteframe-app-icon.png" type="image/png" />
+    <link rel="preload" href="{{assetPrefix}}assets/fonts/cormorant-garamond-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{{assetPrefix}}assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="{{assetPrefix}}assets/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip</a>
+
+    <header class="site-nav">
+      <a class="brand" href="{{path}}" aria-label="Suiteframe">
+        <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <path d="M8 8h18v6H14v18H8V8z" fill="currentColor" />
+          <path class="inner" d="M18 18h14v6H24v10h-6V18z" />
+        </svg>
+        <span class="brand__name">Suiteframe</span>
+      </a>
+      <div class="nav-end">
+        <ul class="langs" aria-label="Language">
+          <li>
+            <a href="/" hreflang="en" {{langCurrentEn}}>{{lang_en}}</a>
+          </li>
+          <li>
+            <a href="/de/" hreflang="de" {{langCurrentDe}}>{{lang_de}}</a>
+          </li>
+          <li>
+            <a href="/fr/" hreflang="fr" {{langCurrentFr}}>{{lang_fr}}</a>
+          </li>
+        </ul>
+        <a class="nav-contact" href="#contact">{{nav_contact}}</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-label="Suiteframe">
+        <div class="hero__media">
+          <picture>
+            <source
+              type="image/avif"
+              srcset="{{assetPrefix}}assets/img/exterior-dusk-800.avif 800w, {{assetPrefix}}assets/img/exterior-dusk-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-dusk-2400.avif 2400w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcset="{{assetPrefix}}assets/img/exterior-dusk-800.webp 800w, {{assetPrefix}}assets/img/exterior-dusk-1600.webp 1600w, {{assetPrefix}}assets/img/exterior-dusk-2400.webp 2400w"
+              sizes="100vw"
+            />
+            <img
+              src="{{assetPrefix}}assets/img/exterior-dusk-1600.jpg"
+              srcset="{{assetPrefix}}assets/img/exterior-dusk-800.jpg 800w, {{assetPrefix}}assets/img/exterior-dusk-1600.jpg 1600w, {{assetPrefix}}assets/img/exterior-dusk-2400.jpg 2400w"
+              sizes="100vw"
+              alt="{{hero_alt}}"
+              width="1600"
+              height="1000"
+              fetchpriority="high"
+            />
+          </picture>
+          <div class="hero__shade" aria-hidden="true"></div>
+        </div>
+        <div class="hero__copy">
+          <h1 class="hero__line">{{hero_line}}</h1>
+        </div>
+      </section>
+
+      <section class="section" id="what" aria-label="{{what_label}}">
+        <p class="statement">{{what_body}}</p>
+      </section>
+
+      <div class="gallery" aria-label="{{gallery_label}}">
+        <figure class="gallery__item">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/living-800.avif 800w, {{assetPrefix}}assets/img/living-1600.avif 1600w" sizes="(max-width:768px) 100vw, 58vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/living-800.webp 800w, {{assetPrefix}}assets/img/living-1600.webp 1600w" sizes="(max-width:768px) 100vw, 58vw" />
+            <img src="{{assetPrefix}}assets/img/living-1600.jpg" alt="{{living_alt}}" width="1600" height="2000" loading="lazy" />
+          </picture>
+        </figure>
+        <figure class="gallery__item">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/bedroom-800.avif 800w, {{assetPrefix}}assets/img/bedroom-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/bedroom-800.webp 800w, {{assetPrefix}}assets/img/bedroom-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
+            <img src="{{assetPrefix}}assets/img/bedroom-1600.jpg" alt="{{bedroom_alt}}" width="1600" height="2000" loading="lazy" />
+          </picture>
+        </figure>
+        <figure class="gallery__item">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/bath-800.avif 800w, {{assetPrefix}}assets/img/bath-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/bath-800.webp 800w, {{assetPrefix}}assets/img/bath-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
+            <img src="{{assetPrefix}}assets/img/bath-1600.jpg" alt="{{bath_alt}}" width="1600" height="2000" loading="lazy" />
+          </picture>
+        </figure>
+        <figure class="gallery__item">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/detail-junction-800.avif 800w, {{assetPrefix}}assets/img/detail-junction-1600.avif 1600w" sizes="(max-width:768px) 100vw, 34vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/detail-junction-800.webp 800w, {{assetPrefix}}assets/img/detail-junction-1600.webp 1600w" sizes="(max-width:768px) 100vw, 34vw" />
+            <img src="{{assetPrefix}}assets/img/detail-junction-1600.jpg" alt="{{detail_alt}}" width="1600" height="2000" loading="lazy" />
+          </picture>
+        </figure>
+        <figure class="gallery__item gallery__item--wide">
+          <picture>
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/terrace-800.avif 800w, {{assetPrefix}}assets/img/terrace-1600.avif 1600w, {{assetPrefix}}assets/img/terrace-2400.avif 2400w" sizes="100vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/terrace-800.webp 800w, {{assetPrefix}}assets/img/terrace-1600.webp 1600w, {{assetPrefix}}assets/img/terrace-2400.webp 2400w" sizes="100vw" />
+            <img src="{{assetPrefix}}assets/img/terrace-1600.jpg" alt="{{terrace_alt}}" width="2400" height="1000" loading="lazy" />
+          </picture>
+        </figure>
+      </div>
+
+      <section class="section" id="pricing" aria-label="{{pricing_label}}">
+        <p class="pricing-line">{{pricing_body}}</p>
+      </section>
+
+      <section class="contact" id="contact" aria-label="{{contact_label}}">
+        <p class="contact__hint">{{contact_hint}}</p>
+        <a class="contact__mail" href="mailto:{{email}}">{{email}}</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>{{footer}}</span>
+      <a href="mailto:{{email}}">{{email}}</a>
+    </footer>
+  </body>
+</html>

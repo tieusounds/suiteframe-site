@@ -1,0 +1,13 @@
+{
+  "name": "suiteframe-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "images": "node scripts/images.mjs",
+    "dev": "node build.mjs && npx --yes serve dist -p 4173"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.2"
+  }
+}
