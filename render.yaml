@@ -43,3 +43,6 @@ services:
       - path: /assets/form.js
         name: Cache-Control
         value: public, max-age=0, must-revalidate
+      - path: /assets/trail.js
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate

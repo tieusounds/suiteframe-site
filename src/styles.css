@@ -172,6 +172,51 @@ a:hover {
   top: var(--space-sm);
 }
 
+/* —— Draw-trail: one continuous thread, drawn in by scroll ——
+   Sized from --pad-x itself so it always sits inside the page's own
+   margin and never crosses into photos or running text. */
+.draw-trail {
+  position: absolute;
+  top: 0;
+  left: 3px;
+  width: calc(var(--pad-x) - 7px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.draw-trail__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.draw-trail__path {
+  fill: none;
+  stroke: oklch(95% 0.012 85 / 0.55);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (min-width: 1024px) {
+  .draw-trail__path {
+    filter: drop-shadow(0 0 6px oklch(95% 0.012 85 / 0.28));
+  }
+}
+
+/* Below this width the margin gutter is too narrow for the thread's
+   loops to read as anything but a straight line, and the extreme
+   non-uniform scale breaks dash-based reveal rendering in some
+   engines. Hide it rather than ship a flattened or inconsistent
+   version of the motion. */
+@media (max-width: 768px) {
+  .draw-trail {
+    display: none;
+  }
+}
+
 /* —— Nav over hero photo —— */
 .site-nav {
   position: absolute;

@@ -344,6 +344,10 @@ await fs.copyFile(
   path.join(ROOT, "src", "form.js"),
   path.join(DIST, "assets", "form.js")
 );
+await fs.copyFile(
+  path.join(ROOT, "src", "trail.js"),
+  path.join(DIST, "assets", "trail.js")
+);
 await copyDir(path.join(ROOT, "assets", "fonts"), path.join(DIST, "assets", "fonts"));
 await copyDir(path.join(ROOT, "assets", "img"), path.join(DIST, "assets", "img"));
 await copyDir(path.join(ROOT, "assets", "brand"), path.join(DIST, "assets", "brand"));
