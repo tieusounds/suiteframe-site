@@ -181,7 +181,7 @@ a:hover {
   top: var(--space-sm);
 }
 
-/* —— Draw-trail: exact chalk pixels from authored screenshots —— */
+/* —— Draw-trail: exact chalk pixels, landmark-aligned, obstacle-punched —— */
 .draw-trail {
   position: absolute;
   top: 0;
@@ -193,22 +193,12 @@ a:hover {
   contain: layout paint;
 }
 
-.draw-trail__layers {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.draw-trail__ink {
-  position: absolute;
-  left: 0;
-  top: 0;
+.draw-trail__canvas {
+  display: block;
   width: 100%;
   height: auto;
-  max-width: none;
-  opacity: 0.92;
-  filter: drop-shadow(0 0 2px oklch(98% 0.01 85 / 0.18));
+  opacity: 0.94;
+  filter: drop-shadow(0 0 1.5px oklch(98% 0.01 85 / 0.16));
 }
 
 .trail-thanks {
