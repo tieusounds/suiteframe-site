@@ -190,16 +190,16 @@
       add(lg + 2, hero.bottom - 8, null, true);
     }
     if (what) {
-      // Open loop around the statement — one stroke, not a closed picture-frame
-      var wp = narrow ? 20 : 28;
-      add(lg + 4, what.top - 24, null, true);
-      add(what.left - wp, what.top - 10);
-      add(what.left - wp - 4, what.cy);
-      add(what.left - wp, what.bottom + 10);
-      add(what.cx, what.bottom + wp);
-      add(what.right + wp * 0.55, what.bottom + 6);
-      add(what.right + wp, what.top + what.height * 0.35);
-      add(lg + 10, what.bottom + 36, null, true);
+      // Open U fully below the statement; exit stays on that under-rail
+      var wp = narrow ? 28 : 44;
+      var yUnder = what.bottom + wp;
+      var xSide = Math.max(lg, what.left - wp);
+      add(lg + 4, what.top - 20, null, true);
+      add(xSide, what.top + 4, null, true);
+      add(xSide, yUnder, null, true);
+      add(what.cx, yUnder, null, true);
+      add(what.right + wp * 0.6, yUnder, null, true);
+      add(lg + 10, yUnder + 8, null, true);
     }
 
     // 2. Demo: one continuous wind around photos then video (not two closed frames)
@@ -218,26 +218,21 @@
     var photoBlock = thumbs || photos;
     if (photoBlock && frame && !narrow) {
       var mid = gapX(photoBlock, frame);
-      var padP = 14;
-      var padV = 16;
-      // Stay under copy, then wind around thumbs → gutter → video frame
+      var padP = 16;
+      var padV = 18;
       var yEnter = underDemo != null ? underDemo : photoBlock.top - 14;
+      var yUnderP = photoBlock.bottom + padP;
+      var yUnderV = frame.bottom + padV;
+      // Simple continuous wind: left → under photos → up gutter → over/right/under video → exit
       add(lg + 8, yEnter, null, true);
-      add(photoBlock.left - padP, yEnter);
-      add(photoBlock.left - padP - 2, photoBlock.cy);
-      add(photoBlock.left - padP, photoBlock.bottom + padP);
-      add(photoBlock.cx, photoBlock.bottom + padP + 2);
-      add(mid - 2, photoBlock.bottom + 8);
-      add(mid, (photoBlock.cy + frame.cy) / 2);
-      add(mid + 2, frame.top - padV);
-      add(frame.cx, frame.top - padV - 2);
-      add(frame.right + padV, frame.top - 6);
-      add(frame.right + padV + 2, frame.cy);
-      add(frame.right + padV, frame.bottom + 8);
-      add(frame.cx, frame.bottom + padV);
-      add(mid + 2, frame.bottom + 10);
-      add(photoBlock.left + 20, photoBlock.bottom + 40);
-      add(lg + 8, photoBlock.bottom + 56, null, true);
+      add(photoBlock.left - padP, yEnter, null, true);
+      add(photoBlock.left - padP, yUnderP, null, true);
+      add(mid, yUnderP, null, true);
+      add(mid, frame.top - padV, null, true);
+      add(frame.right + padV, frame.top - padV, null, true);
+      add(frame.right + padV, yUnderV, null, true);
+      add(mid, yUnderV, null, true);
+      add(lg + 8, yUnderV + 24, null, true);
     } else if (frame) {
       add(lg + 8, frame.top - 14, null, true);
       add(frame.left - 12, frame.top - 10);
@@ -246,18 +241,18 @@
       add(lg + 8, frame.bottom + 28, null, true);
     }
 
-    // 3. How: left margin past lead/steps, under closer+CTA, then across above gallery
+    // 3. How: left gutter clear of lead, under closer+CTA, then across above gallery
     if (howLead) {
-      add(lg + 5, howLead.top - 10);
-      add(lg + 4, howLead.bottom + 12);
+      add(lg + 4, howLead.top - 14, null, true);
+      add(lg + 4, howLead.bottom + 16, null, true);
     }
     if (howCloser) {
-      add(lg + 8, howCloser.top - 8);
-      add(lg + 10, howCloser.bottom + 10);
+      add(lg + 8, howCloser.top - 6, null, true);
+      add(howCloser.left - 12, howCloser.bottom + 14);
     }
     if (howCta) {
-      add(lg + 12, howCta.cy);
-      add(lg + 8, howCta.bottom + 20);
+      add(howCta.left - 10, howCta.bottom + 18);
+      add(howCta.right + 24, howCta.bottom + 22);
     }
 
     var galTop = tiles.length
@@ -269,10 +264,11 @@
         )
       : null;
     if (galTop != null) {
-      add(lg + 10, galTop - 20);
-      add(docW * 0.34, galTop - 14);
-      add(docW * 0.58, galTop - 16);
-      add(docW * 0.82, galTop - 12);
+      var yAbove = galTop - 22;
+      add(lg + 10, yAbove, null, true);
+      add(docW * 0.38, yAbove - 2);
+      add(docW * 0.62, yAbove);
+      add(docW * 0.86, yAbove + 2);
     }
 
     // 4. Gallery seams (iPad drawing: down mid/right gutter, across, down left/mid)
@@ -325,44 +321,42 @@
       });
     }
 
-    // 5. Open loop past pricing, sweep right, S toward form gutter
+    // 5. Open U under pricing (flat under-edge), then sweep to right gutter
     if (pricing) {
-      var pp = narrow ? 18 : 26;
-      add(pricing.left - pp, pricing.top - 4);
-      add(pricing.left - pp - 2, pricing.cy);
-      add(pricing.left - 8, pricing.bottom + pp);
-      add(pricing.cx, pricing.bottom + pp + 2);
-      add(pricing.right + pp, pricing.bottom + 6);
-      add(pricing.right + pp + 4, pricing.cy);
-      add(pricing.right + 20, pricing.top - 6);
-      add(docW * 0.58, pricing.bottom + 32);
-      add(rg - 20, pricing.bottom + 44);
+      var pp = narrow ? 28 : 42;
+      var xLeft = Math.max(lg + 8, pricing.left - pp);
+      var yPrice = pricing.bottom + pp;
+      add(xLeft, pricing.top - 12, null, true);
+      add(xLeft, yPrice, null, true);
+      add(pricing.right + pp * 0.5, yPrice, null, true);
+      add(rg - 18, yPrice + 40, null, true);
     }
 
     if (contact) {
-      add(rg - 16, contact.top + 36);
-      add(rg - 22, contact.cy);
+      add(rg - 16, contact.top + 48, null, true);
+      add(rg - 18, contact.cy, null, true);
     }
 
-    // 6. Right gutter past submit → into thanks (handwriting is separate)
+    // 6. Right gutter past submit → under button → into thanks (no shove steps)
     if (submit) {
-      add(rg - 18, submit.top - 28);
-      add(rg - 14, submit.bottom + 18);
-      add(submit.right + 18, submit.bottom + 26);
-      add(Math.max(lg + 28, submit.left - 8), submit.bottom + 40);
+      add(rg - 16, submit.top - 24, null, true);
+      add(rg - 14, submit.bottom + 16, null, true);
+      add(submit.cx, submit.bottom + 28, null, true);
+      add(Math.max(lg + 32, submit.left), submit.bottom + 36, null, true);
     }
 
     if (thanksB) {
-      add(thanksB.left + 40, thanksB.top - 12);
-      add(thanksB.left + 22, thanksB.top + 2);
+      add(thanksB.left + 36, thanksB.top - 14, null, true);
+      add(thanksB.left + 18, thanksB.top + 2, null, true);
     } else {
-      add(docW * 0.32, docH - 90);
+      add(docW * 0.32, docH - 90, null, true);
     }
 
     return pts;
   }
 
   function densify(points, step) {
+    // Linear only — Catmull bows cut through text boxes
     if (points.length < 2) return points.slice();
     var out = [points[0]];
     for (var i = 1; i < points.length; i++) {
@@ -372,25 +366,7 @@
       var n = Math.max(1, Math.ceil(dist / step));
       for (var k = 1; k <= n; k++) {
         var t = k / n;
-        var p0 = points[Math.max(0, i - 2)];
-        var p1 = a;
-        var p2 = b;
-        var p3 = points[Math.min(points.length - 1, i + 1)];
-        var t2 = t * t;
-        var t3 = t2 * t;
-        var x =
-          0.5 *
-          (2 * p1.x +
-            (-p0.x + p2.x) * t +
-            (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
-            (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3);
-        var y =
-          0.5 *
-          (2 * p1.y +
-            (-p0.y + p2.y) * t +
-            (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
-            (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3);
-        out.push(pt(x, y));
+        out.push(pt(lerp(a.x, b.x, t), lerp(a.y, b.y, t)));
       }
     }
     return out;
@@ -477,11 +453,11 @@
   }
 
   function widthAt(s, narrow) {
-    var base = narrow ? 1.35 : 2.05;
+    var base = narrow ? 1.55 : 2.25;
     var pulse =
-      0.62 +
-      0.38 * Math.sin(s * Math.PI) * (0.75 + 0.25 * Math.sin(s * 17)) +
-      0.18 * Math.sin(s * 39 + 0.8);
+      0.72 +
+      0.28 * Math.sin(s * Math.PI) * (0.8 + 0.2 * Math.sin(s * 14)) +
+      0.1 * Math.sin(s * 31 + 0.8);
     return base * pulse;
   }
 
@@ -505,11 +481,13 @@
     var end = uptoLen;
     if (end <= 0) return;
 
-    // Soft under-stroke
+    // Continuous path first (one stroke — avoids corner “seams”)
     ctx.beginPath();
     var started = false;
+    var lastI = 0;
     for (var i = 0; i < spine.length; i++) {
       if (segLens[i] > end) break;
+      lastI = i;
       if (!started) {
         ctx.moveTo(spine[i].x, spine[i].y);
         started = true;
@@ -518,21 +496,21 @@
       }
     }
     if (started) {
-      ctx.strokeStyle = "rgba(245, 242, 235, 0.28)";
-      ctx.lineWidth = (narrow ? 3.2 : 4.4);
+      var midS = segLens[lastI] / (2 * totalLen);
+      ctx.strokeStyle = "rgba(248, 246, 240, 0.9)";
+      ctx.lineWidth = widthAt(Math.min(0.85, Math.max(0.2, midS + 0.35)), narrow);
       ctx.stroke();
     }
 
-    // Variable-pressure main stroke (one continuous polyline)
-    for (var j = 1; j < spine.length; j++) {
-      if (segLens[j] > end) break;
-      var s = (segLens[j - 1] + segLens[j]) / (2 * totalLen);
-      var wob = (noise(j, 3.1) - 0.5) * 0.7;
+    // Light pressure accents along the same spine (short overlaps, same centerline)
+    for (var j = 1; j <= lastI; j++) {
+      if (j % 3 !== 0) continue;
+      var s = segLens[j] / totalLen;
       ctx.beginPath();
       ctx.moveTo(spine[j - 1].x, spine[j - 1].y);
-      ctx.lineTo(spine[j].x + wob, spine[j].y + wob * 0.6);
-      ctx.strokeStyle = "rgba(250, 248, 242, 0.82)";
-      ctx.lineWidth = widthAt(s, narrow);
+      ctx.lineTo(spine[j].x, spine[j].y);
+      ctx.strokeStyle = "rgba(255, 252, 245, 0.35)";
+      ctx.lineWidth = widthAt(s, narrow) * 0.55;
       ctx.stroke();
     }
   }
@@ -574,15 +552,15 @@
   function layout() {
     ensureCanvas();
     var bounds = contentBounds();
-    var pad = window.matchMedia("(max-width: 768px)").matches ? 10 : 14;
+    var pad = window.matchMedia("(max-width: 768px)").matches ? 12 : 16;
     var obstacles = collectObstacles(pad);
 
     var raw = buildSpine(bounds.docW, bounds.docH, obstacles);
-    raw = densify(raw, 11);
-    raw = wobble(raw, 2.6);
-    raw = breakStraights(raw, 16);
-    raw = densify(raw, 7);
-    raw = wobble(raw, 1.15);
+    raw = densify(raw, 12);
+    raw = wobble(raw, 1.8);
+    raw = breakStraights(raw, 22);
+    raw = densify(raw, 8);
+    raw = wobble(raw, 0.85);
     var gutterX = Math.max(14, Math.min(36, bounds.docW * 0.028));
     spine = projectChain(raw, obstacles, gutterX);
     measure(spine);
