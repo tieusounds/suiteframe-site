@@ -23,7 +23,64 @@ const RAW_KEYS = new Set([
   "pageScripts",
   "consentBanner",
   "cookieSettingsLink",
+  "demoMedia",
 ]);
+
+// Prefer a committed site video; else pick up the airbnb-tours suiteframe-demo job output when present.
+const DEMO_VIDEO_CANDIDATES = [
+  path.join(ROOT, "assets", "video", "suiteframe-demo.mp4"),
+  path.join(ROOT, "..", "airbnb-tours", "data", "suiteframe-demo", "preview_master.mp4"),
+  path.join(ROOT, "..", "airbnb-tours", "data", "suiteframe-demo", "final_master.mp4"),
+  path.join(ROOT, "..", "airbnb-tours", "data", "suiteframe-demo", "tour.mp4"),
+];
+
+async function resolveDemoVideo() {
+  for (const candidate of DEMO_VIDEO_CANDIDATES) {
+    try {
+      await fs.access(candidate);
+      return candidate;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
+async function syncDemoVideo() {
+  const found = await resolveDemoVideo();
+  const destDir = path.join(ROOT, "assets", "video");
+  const dest = path.join(destDir, "suiteframe-demo.mp4");
+  await fs.mkdir(destDir, { recursive: true });
+  if (!found) {
+    console.log("demo video: placeholder (no suiteframe-demo.mp4 yet)");
+    return false;
+  }
+  if (path.resolve(found) !== path.resolve(dest)) {
+    await fs.copyFile(found, dest);
+    console.log(`demo video: copied from ${found}`);
+  } else {
+    console.log("demo video: assets/video/suiteframe-demo.mp4");
+  }
+  return true;
+}
+
+function buildDemoMedia(assetPrefix, hasVideo, alt) {
+  const poster = `${assetPrefix}assets/img/demo-poster-1600.jpg`;
+  if (hasVideo) {
+    return `<video
+                class="demo__player"
+                poster="${poster}"
+                controls
+                playsinline
+                preload="metadata"
+                aria-label="${escapeHtml(alt)}"
+              >
+                <source src="${assetPrefix}assets/video/suiteframe-demo.mp4" type="video/mp4" />
+              </video>`;
+  }
+  return `<img src="${poster}" alt="${escapeHtml(alt)}" width="1600" height="900" loading="lazy" />
+              <span class="demo__play" aria-hidden="true"></span>`;
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -191,6 +248,7 @@ function run(cmd, args) {
 }
 
 await run("node", ["scripts/images.mjs"]);
+const hasDemoVideo = await syncDemoVideo();
 
 await fs.rm(DIST, { recursive: true, force: true });
 await fs.mkdir(DIST, { recursive: true });
@@ -245,6 +303,7 @@ for (const locale of locales) {
     analytics: buildAnalytics(locale, homeAssetPrefix),
     analyticsScripts: "",
     pageScripts: buildPageScripts(homeAssetPrefix, { form: true }),
+    demoMedia: buildDemoMedia(homeAssetPrefix, hasDemoVideo, strings.demo_video_alt),
   });
 
   const privacyHtml = render(privacyTemplate, {
@@ -288,6 +347,13 @@ await fs.copyFile(
 await copyDir(path.join(ROOT, "assets", "fonts"), path.join(DIST, "assets", "fonts"));
 await copyDir(path.join(ROOT, "assets", "img"), path.join(DIST, "assets", "img"));
 await copyDir(path.join(ROOT, "assets", "brand"), path.join(DIST, "assets", "brand"));
+if (hasDemoVideo) {
+  await fs.mkdir(path.join(DIST, "assets", "video"), { recursive: true });
+  await fs.copyFile(
+    path.join(ROOT, "assets", "video", "suiteframe-demo.mp4"),
+    path.join(DIST, "assets", "video", "suiteframe-demo.mp4")
+  );
+}
 
 await fs.writeFile(
   path.join(DIST, "robots.txt"),

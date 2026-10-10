@@ -123,6 +123,56 @@
         <p class="statement">{{what_body}}</p>
       </section>
 
+      <section class="section demo" id="demo" aria-labelledby="demo-title">
+        <h2 class="visually-hidden" id="demo-title">{{demo_title}}</h2>
+        <p class="statement demo__lead">{{demo_lead}}</p>
+        <p class="demo__sub">{{demo_sub}}</p>
+        <div class="demo__grid">
+          <div class="demo__photos">
+            <p class="demo__caption">{{demo_photos_label}}</p>
+            <div class="demo__thumbs">
+              <img src="{{assetPrefix}}assets/img/demo-01-800.jpg" alt="{{demo_01_alt}}" width="800" height="450" loading="lazy" />
+              <img src="{{assetPrefix}}assets/img/demo-02-800.jpg" alt="{{demo_02_alt}}" width="800" height="450" loading="lazy" />
+              <img src="{{assetPrefix}}assets/img/demo-03-800.jpg" alt="{{demo_03_alt}}" width="800" height="450" loading="lazy" />
+              <img src="{{assetPrefix}}assets/img/demo-04-800.jpg" alt="{{demo_04_alt}}" width="800" height="450" loading="lazy" />
+              <img src="{{assetPrefix}}assets/img/demo-05-800.jpg" alt="{{demo_05_alt}}" width="800" height="450" loading="lazy" />
+              <img src="{{assetPrefix}}assets/img/demo-06-800.jpg" alt="{{demo_06_alt}}" width="800" height="450" loading="lazy" />
+            </div>
+          </div>
+          <div class="demo__video">
+            <p class="demo__caption">{{demo_video_label}}</p>
+            <div class="demo__frame">
+              {{demoMedia}}
+              <span class="demo__tag">{{demo_video_tag}}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section how" id="how" aria-labelledby="how-title">
+        <h2 class="visually-hidden" id="how-title">{{how_title}}</h2>
+        <p class="statement how__lead">{{how_lead}}</p>
+        <ol class="how__steps">
+          <li class="how__step">
+            <span class="how__num" aria-hidden="true">01</span>
+            <p class="how__step-label">{{how_step1_label}}</p>
+            <p class="how__step-body">{{how_step1_body}}</p>
+          </li>
+          <li class="how__step">
+            <span class="how__num" aria-hidden="true">02</span>
+            <p class="how__step-label">{{how_step2_label}}</p>
+            <p class="how__step-body">{{how_step2_body}}</p>
+          </li>
+          <li class="how__step">
+            <span class="how__num" aria-hidden="true">03</span>
+            <p class="how__step-label">{{how_step3_label}}</p>
+            <p class="how__step-body">{{how_step3_body}}</p>
+          </li>
+        </ol>
+        <p class="how__closer">{{how_closer}}</p>
+        <a class="how__cta" href="#contact">{{how_cta}}</a>
+      </section>
+
       <section class="gallery" id="gallery" aria-labelledby="gallery-title">
         <h2 class="visually-hidden" id="gallery-title">{{gallery_label}}</h2>
         <figure class="gallery__item" data-image="living">

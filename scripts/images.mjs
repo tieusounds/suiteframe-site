@@ -12,14 +12,24 @@ const SLOTS = [
   "exterior-portrait",
   "exterior-snow",
   "living",
+  "living-side",
   "kitchen",
   "dining",
+  "hallway",
   "bedroom",
   "bath",
   "spa",
   "detail-junction",
   "detail-textiles",
   "terrace",
+  // Suiteframe demo job (airbnb-tours/data/suiteframe-demo) — source stills + video poster
+  "demo-01",
+  "demo-02",
+  "demo-03",
+  "demo-04",
+  "demo-05",
+  "demo-06",
+  "demo-poster",
 ];
 
 async function findSource(slot) {
