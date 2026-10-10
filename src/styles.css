@@ -197,8 +197,7 @@ a:hover {
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.94;
-  filter: drop-shadow(0 0 1.5px oklch(98% 0.01 85 / 0.16));
+  opacity: 0.9;
 }
 
 .trail-thanks {
