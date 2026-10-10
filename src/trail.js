@@ -3,22 +3,11 @@
 // made literal as a line the visitor's own scrolling draws.
 (function () {
   var root = document.querySelector(".draw-trail");
-  var path = document.querySelector(".draw-trail__path");
-  if (!root || !path) return;
+  var svg = document.querySelector(".draw-trail__svg");
+  if (!root || !svg) return;
 
   var reduceMotion =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  var length = path.getTotalLength();
-  path.style.strokeDasharray = String(length);
-
-  if (reduceMotion) {
-    // Reduced motion: show the line fully drawn and static, no scroll coupling.
-    path.style.strokeDashoffset = "0";
-    return;
-  }
-
-  path.style.strokeDashoffset = String(length);
 
   function setHeight() {
     var h = Math.max(
@@ -28,13 +17,31 @@
     root.style.height = h + "px";
   }
 
+  // Reveal from the top of the page down to `pct` (0–100).
+  // Set in JS so we never depend on CSS custom-property calc inside clip-path.
+  function setReveal(pct) {
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    svg.style.clipPath = "inset(0 0 " + (100 - pct) + "% 0)";
+  }
+
+  if (reduceMotion) {
+    setHeight();
+    setReveal(100);
+    return;
+  }
+
   var ticking = false;
   function draw() {
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    var p = max > 0 ? window.scrollY / max : 0;
-    if (p < 0) p = 0;
-    if (p > 1) p = 1;
-    path.style.strokeDashoffset = String(length * (1 - p));
+    var docH = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight,
+      1
+    );
+    // Tip tracks the bottom of the viewport: as you scroll, the thread
+    // draws downward in lockstep — top → bottom, never lagging behind.
+    var tip = window.scrollY + window.innerHeight;
+    setReveal((tip / docH) * 100);
     ticking = false;
   }
 
@@ -52,7 +59,10 @@
     setHeight();
     draw();
   });
-  window.addEventListener("load", setHeight);
+  window.addEventListener("load", function () {
+    setHeight();
+    draw();
+  });
 
   if ("ResizeObserver" in window) {
     var ro = new ResizeObserver(function () {

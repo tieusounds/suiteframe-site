@@ -174,14 +174,15 @@ a:hover {
 
 /* —— Draw-trail: one continuous thread, drawn in by scroll ——
    Sized from --pad-x itself so it always sits inside the page's own
-   margin and never crosses into photos or running text. */
+   margin and never crosses into photos or running text.
+   trail.js sets svg clip-path so the tip tracks the viewport bottom. */
 .draw-trail {
   position: absolute;
   top: 0;
-  left: 3px;
-  width: calc(var(--pad-x) - 7px);
+  left: 2px;
+  width: max(14px, calc(var(--pad-x) - 6px));
   pointer-events: none;
-  z-index: 2;
+  z-index: 8;
 }
 
 .draw-trail__svg {
@@ -189,31 +190,29 @@ a:hover {
   width: 100%;
   height: 100%;
   overflow: visible;
+  /* Hidden until trail.js sets the reveal clip (avoids a flash of full path). */
+  clip-path: inset(0 0 100% 0);
 }
 
 .draw-trail__path {
   fill: none;
-  stroke: oklch(95% 0.012 85 / 0.55);
-  stroke-width: 1.1;
+  stroke: oklch(98% 0.008 85 / 0.82);
+  stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 5px oklch(98% 0.008 85 / 0.35));
 }
 
-@media (min-width: 1024px) {
-  .draw-trail__path {
-    filter: drop-shadow(0 0 6px oklch(95% 0.012 85 / 0.28));
-  }
-}
-
-/* Below this width the margin gutter is too narrow for the thread's
-   loops to read as anything but a straight line, and the extreme
-   non-uniform scale breaks dash-based reveal rendering in some
-   engines. Hide it rather than ship a flattened or inconsistent
-   version of the motion. */
 @media (max-width: 768px) {
   .draw-trail {
-    display: none;
+    left: 1px;
+    width: 12px;
+  }
+
+  .draw-trail__path {
+    stroke-width: 1.35;
+    stroke: oklch(98% 0.008 85 / 0.7);
   }
 }
 
