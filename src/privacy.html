@@ -17,6 +17,35 @@
     <link rel="preload" href="{{assetPrefix}}assets/fonts/cormorant-garamond-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{{assetPrefix}}assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="{{assetPrefix}}assets/styles.css" />
+    <script>
+      (function () {
+        try {
+          history.scrollRestoration = "manual";
+        } catch (e) {}
+        function isReload() {
+          try {
+            var n = performance.getEntriesByType("navigation")[0];
+            if (n) return n.type === "reload";
+          } catch (e) {}
+          try {
+            return performance.navigation && performance.navigation.type === 1;
+          } catch (e2) {}
+          return false;
+        }
+        function toTop() {
+          if (!isReload()) return;
+          if (location.hash) {
+            try {
+              history.replaceState(null, "", location.pathname + location.search);
+            } catch (e) {}
+          }
+          window.scrollTo(0, 0);
+        }
+        toTop();
+        window.addEventListener("pageshow", toTop);
+        window.addEventListener("load", toTop);
+      })();
+    </script>
     {{analytics}}
   </head>
   <body class="page-legal">
