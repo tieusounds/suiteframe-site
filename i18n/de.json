@@ -96,5 +96,7 @@
   "form_error_send": "Senden fehlgeschlagen. Bitte schreiben Sie an customer@suiteframe.ch.",
   "privacy_form_h": "Offertenanfragen",
   "privacy_form_body": "Wenn Sie das Offertenformular absenden, erhalten wir Ihren Namen, E-Mail, Telefon, Objektadresse und den Link zum Inserat oder zur Website per E-Mail an customer@suiteframe.ch über Web3Forms (Formularzustellung). Wir verwenden diese Daten nur für Offerte und Korrespondenz. Wir verkaufen diese Daten nicht.",
-  "trail_thanks": "Danke für Ihren Besuch — noch einen schönen Tag."
+  "trail_thanks_1": "danke für ihren besuch",
+  "trail_thanks_2": "noch einen schönen tag :)",
+  "trail_thanks_3": "Suiteframe.ch"
 }
