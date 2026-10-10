@@ -95,5 +95,6 @@
   "form_error_url": "Indiquez une URL complète (https://…)",
   "form_error_send": "Envoi impossible. Écrivez à customer@suiteframe.ch.",
   "privacy_form_h": "Demandes de devis",
-  "privacy_form_body": "Si vous envoyez le formulaire de devis, nous recevons votre nom, e-mail, téléphone, adresse du bien et le lien vers l’annonce ou le site par e-mail à customer@suiteframe.ch via Web3Forms (acheminement du formulaire). Nous utilisons ces données uniquement pour préparer un devis et la correspondance associée. Nous ne vendons pas ces données."
+  "privacy_form_body": "Si vous envoyez le formulaire de devis, nous recevons votre nom, e-mail, téléphone, adresse du bien et le lien vers l’annonce ou le site par e-mail à customer@suiteframe.ch via Web3Forms (acheminement du formulaire). Nous utilisons ces données uniquement pour préparer un devis et la correspondance associée. Nous ne vendons pas ces données.",
+  "trail_thanks": "Merci de votre visite — belle journée."
 }

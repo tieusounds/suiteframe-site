@@ -41,45 +41,12 @@
     <a class="skip" href="#main">{{skip}}</a>
 
     <div class="draw-trail" aria-hidden="true">
-      <svg class="draw-trail__svg" viewBox="0 0 120 2200" preserveAspectRatio="none" focusable="false">
-        <path
-          class="draw-trail__path"
-          d="M58,0
-             C92,55 30,85 60,140
-             C88,190 34,210 58,260
-             C70,278 92,268 90,245
-             C88,222 66,228 64,250
-             C60,275 40,300 58,335
-             C92,380 28,420 58,470
-             C86,510 34,545 58,590
-             C84,628 92,650 78,672
-             C64,694 48,680 54,660
-             C60,640 80,636 84,655
-             C88,676 70,705 58,735
-             C30,775 90,815 58,860
-             C86,900 32,940 58,985
-             C84,1022 92,1045 76,1065
-             C60,1085 46,1068 52,1048
-             C58,1030 78,1028 82,1046
-             C86,1066 68,1096 58,1130
-             C32,1170 88,1210 58,1255
-             C86,1296 34,1332 58,1375
-             C88,1414 30,1450 58,1495
-             C84,1532 94,1556 78,1576
-             C62,1596 46,1580 52,1560
-             C58,1540 78,1538 82,1557
-             C86,1578 68,1608 58,1640
-             C30,1680 88,1718 58,1760
-             C86,1800 32,1836 58,1878
-             C86,1916 30,1952 58,1995
-             C84,2032 94,2056 78,2076
-             C62,2096 46,2080 52,2060
-             C58,2040 78,2038 82,2057
-             C86,2078 68,2108 58,2140
-             C40,2165 70,2185 58,2200"
-        />
+      <svg class="draw-trail__svg" focusable="false">
+        <path class="draw-trail__path" fill="none" />
+        <text class="draw-trail__thanks" text-anchor="middle" dominant-baseline="middle"></text>
       </svg>
     </div>
+    <span id="trail-thanks-src" class="visually-hidden" hidden>{{trail_thanks}}</span>
 
     <header class="site-nav">
       <a class="brand" href="{{path}}">
@@ -161,7 +128,7 @@
 
       <section class="section" id="what" aria-labelledby="what-title">
         <h2 class="visually-hidden" id="what-title">{{what_label}}</h2>
-        <p class="statement">{{what_body}}</p>
+        <p class="statement" data-trail="what">{{what_body}}</p>
       </section>
 
       <section class="section demo" id="demo" aria-labelledby="demo-title">
@@ -169,7 +136,7 @@
         <p class="statement demo__lead">{{demo_lead}}</p>
         <p class="demo__sub">{{demo_sub}}</p>
         <div class="demo__grid">
-          <div class="demo__photos">
+          <div class="demo__photos" data-trail="photos">
             <p class="demo__caption">{{demo_photos_label}}</p>
             <div class="demo__thumbs">
               <img src="{{assetPrefix}}assets/img/demo-01-800.jpg" alt="{{demo_01_alt}}" width="800" height="450" loading="lazy" />
@@ -180,9 +147,9 @@
               <img src="{{assetPrefix}}assets/img/demo-06-800.jpg" alt="{{demo_06_alt}}" width="800" height="450" loading="lazy" />
             </div>
           </div>
-          <div class="demo__video">
+          <div class="demo__video" data-trail="video-col">
             <p class="demo__caption">{{demo_video_label}}</p>
-            <div class="demo__frame">
+            <div class="demo__frame" data-trail="video">
               {{demoMedia}}
               <span class="demo__tag">{{demo_video_tag}}</span>
             </div>
@@ -211,61 +178,61 @@
           </li>
         </ol>
         <p class="how__closer">{{how_closer}}</p>
-        <a class="how__cta" href="#contact">{{how_cta}}</a>
+        <a class="how__cta" href="#contact" data-trail="how-cta">{{how_cta}}</a>
       </section>
 
-      <section class="gallery" id="gallery" aria-labelledby="gallery-title">
+      <section class="gallery" id="gallery" aria-labelledby="gallery-title" data-trail="gallery">
         <h2 class="visually-hidden" id="gallery-title">{{gallery_label}}</h2>
-        <figure class="gallery__item" data-image="living">
+        <figure class="gallery__item" data-image="living" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/living-800.avif 800w, {{assetPrefix}}assets/img/living-1600.avif 1600w" sizes="(max-width:768px) 100vw, 58vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/living-800.webp 800w, {{assetPrefix}}assets/img/living-1600.webp 1600w" sizes="(max-width:768px) 100vw, 58vw" />
-            <img src="{{assetPrefix}}assets/img/living-1600.jpg" alt="{{living_alt}}" width="1600" height="900" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/living-800.avif 800w, {{assetPrefix}}assets/img/living-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/living-800.webp 800w, {{assetPrefix}}assets/img/living-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/living-1600.jpg" alt="{{living_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="bedroom">
+        <figure class="gallery__item" data-image="bedroom" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/bedroom-800.avif 800w, {{assetPrefix}}assets/img/bedroom-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/bedroom-800.webp 800w, {{assetPrefix}}assets/img/bedroom-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
-            <img src="{{assetPrefix}}assets/img/bedroom-1600.jpg" alt="{{bedroom_alt}}" width="1600" height="900" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/bedroom-800.avif 800w, {{assetPrefix}}assets/img/bedroom-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/bedroom-800.webp 800w, {{assetPrefix}}assets/img/bedroom-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/bedroom-1600.jpg" alt="{{bedroom_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="kitchen">
+        <figure class="gallery__item" data-image="kitchen" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/kitchen-800.avif 800w, {{assetPrefix}}assets/img/kitchen-1600.avif 1600w" sizes="(max-width:768px) 100vw, 42vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/kitchen-800.webp 800w, {{assetPrefix}}assets/img/kitchen-1600.webp 1600w" sizes="(max-width:768px) 100vw, 42vw" />
-            <img src="{{assetPrefix}}assets/img/kitchen-1600.jpg" alt="{{kitchen_alt}}" width="1600" height="900" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/kitchen-800.avif 800w, {{assetPrefix}}assets/img/kitchen-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/kitchen-800.webp 800w, {{assetPrefix}}assets/img/kitchen-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/kitchen-1600.jpg" alt="{{kitchen_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item" data-image="portrait">
+        <figure class="gallery__item" data-image="portrait" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.avif 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.avif 1600w" sizes="(max-width:768px) 100vw, 34vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.webp 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.webp 1600w" sizes="(max-width:768px) 100vw, 34vw" />
-            <img src="{{assetPrefix}}assets/img/exterior-portrait-1600.jpg" alt="{{portrait_alt}}" width="819" height="1024" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.avif 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.avif 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-portrait-800.webp 800w, {{assetPrefix}}assets/img/exterior-portrait-1600.webp 1600w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/exterior-portrait-1600.jpg" alt="{{portrait_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item gallery__item--wide" data-image="terrace">
+        <figure class="gallery__item gallery__item--wide" data-image="terrace" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/terrace-800.avif 800w, {{assetPrefix}}assets/img/terrace-1600.avif 1600w, {{assetPrefix}}assets/img/terrace-2400.avif 2400w" sizes="100vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/terrace-800.webp 800w, {{assetPrefix}}assets/img/terrace-1600.webp 1600w, {{assetPrefix}}assets/img/terrace-2400.webp 2400w" sizes="100vw" />
-            <img src="{{assetPrefix}}assets/img/terrace-1600.jpg" alt="{{terrace_alt}}" width="1600" height="900" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/terrace-800.avif 800w, {{assetPrefix}}assets/img/terrace-1600.avif 1600w, {{assetPrefix}}assets/img/terrace-2400.avif 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/terrace-800.webp 800w, {{assetPrefix}}assets/img/terrace-1600.webp 1600w, {{assetPrefix}}assets/img/terrace-2400.webp 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/terrace-1600.jpg" alt="{{terrace_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
-        <figure class="gallery__item gallery__item--wide" data-image="snow">
+        <figure class="gallery__item gallery__item--wide" data-image="snow" data-trail="tile">
           <picture>
-            <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-snow-800.avif 800w, {{assetPrefix}}assets/img/exterior-snow-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.avif 2400w" sizes="100vw" />
-            <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-snow-800.webp 800w, {{assetPrefix}}assets/img/exterior-snow-1600.webp 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.webp 2400w" sizes="100vw" />
-            <img src="{{assetPrefix}}assets/img/exterior-snow-1600.jpg" alt="{{snow_alt}}" width="1600" height="900" loading="lazy" />
+            <source type="image/avif" srcset="{{assetPrefix}}assets/img/exterior-snow-800.avif 800w, {{assetPrefix}}assets/img/exterior-snow-1600.avif 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.avif 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <source type="image/webp" srcset="{{assetPrefix}}assets/img/exterior-snow-800.webp 800w, {{assetPrefix}}assets/img/exterior-snow-1600.webp 1600w, {{assetPrefix}}assets/img/exterior-snow-2400.webp 2400w" sizes="(max-width:420px) 100vw, (max-width:768px) 50vw, 33vw" />
+            <img src="{{assetPrefix}}assets/img/exterior-snow-1600.jpg" alt="{{snow_alt}}" width="1600" height="1200" loading="lazy" />
           </picture>
         </figure>
       </section>
 
       <section class="section" id="pricing" aria-labelledby="pricing-title">
         <h2 class="visually-hidden" id="pricing-title">{{pricing_label}}</h2>
-        <p class="pricing-line">{{pricing_body}}</p>
+        <p class="pricing-line" data-trail="pricing">{{pricing_body}}</p>
       </section>
 
-      <section class="contact" id="contact" aria-labelledby="contact-title">
+      <section class="contact" id="contact" aria-labelledby="contact-title" data-trail="contact">
         <h2 class="visually-hidden" id="contact-title">{{contact_label}}</h2>
         <div class="contact__intro">
           <p class="contact__hint">{{contact_hint}}</p>
@@ -326,6 +293,8 @@
           <button class="quote__submit" type="submit">{{form_submit}}</button>
         </form>
       </section>
+
+      <p class="trail-thanks-slot" data-trail="thanks" aria-hidden="true"></p>
     </main>
 
     <footer class="site-footer">

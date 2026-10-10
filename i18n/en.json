@@ -95,5 +95,6 @@
   "form_error_url": "Enter a full URL (https://…)",
   "form_error_send": "Could not send. Please email customer@suiteframe.ch.",
   "privacy_form_h": "Quote requests",
-  "privacy_form_body": "If you submit the quote form, we receive your name, email, phone, property address, and listing or website link by email at customer@suiteframe.ch via Web3Forms (form delivery processor). We use these details only to prepare and send a quote and related correspondence. We do not sell this data."
+  "privacy_form_body": "If you submit the quote form, we receive your name, email, phone, property address, and listing or website link by email at customer@suiteframe.ch via Web3Forms (form delivery processor). We use these details only to prepare and send a quote and related correspondence. We do not sell this data.",
+  "trail_thanks": "Thank you for visiting us, have a great day."
 }
