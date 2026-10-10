@@ -6,7 +6,9 @@
   var path = document.querySelector(".draw-trail__path");
   var thanksEl = document.querySelector(".draw-trail__thanks");
   var thanksSrc = document.getElementById("trail-thanks-src");
+  // Trail hidden for screenshot path-authoring — bail before layout work.
   if (!root || !svg || !path) return;
+  if (window.getComputedStyle(root).display === "none") return;
 
   var reduceMotion =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;

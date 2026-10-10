@@ -173,8 +173,10 @@ a:hover {
   top: var(--space-sm);
 }
 
-/* —— Draw-trail: layout-aware hand-drawn stroke, revealed by scroll —— */
+/* —— Draw-trail: layout-aware hand-drawn stroke, revealed by scroll ——
+   Temporarily hidden so path can be authored on clean screenshots. */
 .draw-trail {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
