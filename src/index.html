@@ -42,15 +42,7 @@
     <a class="skip" href="#main">{{skip}}</a>
 
     <div class="draw-trail" aria-hidden="true">
-      <svg class="draw-trail__svg" focusable="false">
-        <defs>
-          <mask id="draw-trail-mask" maskUnits="userSpaceOnUse">
-            <rect class="draw-trail__mask-bg" width="100%" height="100%" fill="black" />
-            <path class="draw-trail__guide" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" />
-          </mask>
-        </defs>
-        <path class="draw-trail__ribbon" mask="url(#draw-trail-mask)" />
-      </svg>
+      <div class="draw-trail__layers"></div>
     </div>
 
     <header class="site-nav">

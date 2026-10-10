@@ -1,0 +1,74 @@
+[
+  {
+    "id": "hero-what",
+    "file": "assets/trail-ink/hero-what.png",
+    "src_w": 1024,
+    "src_h": 713,
+    "ink_pixels": 2528,
+    "page_y": 0,
+    "align_score": 0.2537,
+    "capture_w": 1024,
+    "anchor": ".hero",
+    "y_offset_frac": 0
+  },
+  {
+    "id": "demo",
+    "file": "assets/trail-ink/demo.png",
+    "src_w": 1024,
+    "src_h": 713,
+    "ink_pixels": 5751,
+    "page_y": 1140,
+    "align_score": 0.6857,
+    "capture_w": 1024,
+    "anchor": ".demo",
+    "y_offset_frac": 0
+  },
+  {
+    "id": "how",
+    "file": "assets/trail-ink/how.png",
+    "src_w": 1024,
+    "src_h": 671,
+    "ink_pixels": 3272,
+    "page_y": 1780,
+    "align_score": 0.1405,
+    "capture_w": 1024,
+    "anchor": ".how",
+    "y_offset_frac": 0
+  },
+  {
+    "id": "gallery",
+    "file": "assets/trail-ink/gallery.png",
+    "src_w": 1024,
+    "src_h": 713,
+    "ink_pixels": 3531,
+    "page_y": 2708,
+    "align_score": 0.734,
+    "capture_w": 1024,
+    "anchor": ".gallery",
+    "y_offset_frac": -0.08
+  },
+  {
+    "id": "pricing",
+    "file": "assets/trail-ink/pricing.png",
+    "src_w": 1024,
+    "src_h": 713,
+    "ink_pixels": 5595,
+    "page_y": 3300,
+    "align_score": 0.097,
+    "capture_w": 1024,
+    "anchor": "[data-trail=\"pricing\"]",
+    "y_offset_frac": -0.35
+  },
+  {
+    "id": "contact",
+    "file": "assets/trail-ink/contact.png",
+    "src_w": 1024,
+    "src_h": 713,
+    "ink_pixels": 6560,
+    "page_y": 3550,
+    "align_score": 0.0962,
+    "capture_w": 1024,
+    "anchor": "#contact",
+    "y_offset_frac": -0.05
+  }
+]

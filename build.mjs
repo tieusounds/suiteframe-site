@@ -351,6 +351,7 @@ await fs.copyFile(
 await copyDir(path.join(ROOT, "assets", "fonts"), path.join(DIST, "assets", "fonts"));
 await copyDir(path.join(ROOT, "assets", "img"), path.join(DIST, "assets", "img"));
 await copyDir(path.join(ROOT, "assets", "brand"), path.join(DIST, "assets", "brand"));
+await copyDir(path.join(ROOT, "assets", "trail-ink"), path.join(DIST, "assets", "trail-ink"));
 if (hasDemoVideo) {
   await fs.mkdir(path.join(DIST, "assets", "video"), { recursive: true });
   await fs.copyFile(
