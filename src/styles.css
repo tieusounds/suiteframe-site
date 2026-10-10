@@ -170,43 +170,31 @@ a:hover {
   justify-content: space-between;
   gap: var(--space-sm);
   padding: var(--space-md) var(--pad-x);
-  mix-blend-mode: difference;
   color: oklch(96% 0 0);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
   text-decoration: none;
   color: inherit;
 }
 
 .brand:hover {
-  color: inherit;
+  opacity: 0.88;
 }
 
-.brand__mark {
-  width: 1.35rem;
-  height: 1.35rem;
-  color: oklch(92% 0 0);
-}
-
-.brand__mark .inner {
-  fill: oklch(58% 0.07 173);
-}
-
-.brand__name {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  letter-spacing: 0.01em;
+.brand__logo {
+  display: block;
+  height: 1.5rem;
+  width: auto;
 }
 
 .nav-end {
   display: flex;
   align-items: center;
   gap: clamp(1rem, 3vw, 2rem);
+  mix-blend-mode: difference;
 }
 
 .langs {
