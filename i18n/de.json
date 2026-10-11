@@ -13,7 +13,7 @@
   "what_label": "Unser Angebot",
   "what_body": "Wir machen aus Ihren Inseratfotos einen ruhigen, filmischen Rundgang durch jeden Raum — für Objekte, die von ihrer Atmosphäre leben.",
   "demo_title": "Beispiel-Rundgang",
-  "demo_lead": "Sechs Fotos. Ein Rundgang, an dem niemand vorbeiscrollt.",
+  "demo_lead": "Jedes Foto, das Sie senden. Ein Rundgang, an dem niemand vorbeiscrollt.",
   "demo_sub": "Ein Beispielobjekt — gebaut genau so, wie Ihres: aus Fotos, die Sie bereits haben.",
   "demo_photos_label": "Womit wir starten",
   "demo_video_label": "Was Gäste sehen",
@@ -95,5 +95,13 @@
   "form_error_url": "Vollständige URL eingeben (https://…)",
   "form_error_send": "Senden fehlgeschlagen. Bitte schreiben Sie an customer@suiteframe.ch.",
   "privacy_form_h": "Offertenanfragen",
-  "privacy_form_body": "Wenn Sie das Offertenformular absenden, erhalten wir Ihren Namen, E-Mail, Telefon, Objektadresse und den Link zum Inserat oder zur Website per E-Mail an customer@suiteframe.ch über Web3Forms (Formularzustellung). Wir verwenden diese Daten nur für Offerte und Korrespondenz. Wir verkaufen diese Daten nicht."
+  "privacy_form_body": "Wenn Sie das Offertenformular absenden, erhalten wir Ihren Namen, E-Mail, Telefon, Objektadresse und den Link zum Inserat oder zur Website per E-Mail an customer@suiteframe.ch über Web3Forms (Formularzustellung). Wir verwenden diese Daten nur für Offerte und Korrespondenz. Wir verkaufen diese Daten nicht.",
+  "living_side_alt": "Wohnzimmer mit langer Fensterbank und Blick auf schneebedeckte Gipfel.",
+  "dining_alt": "Esstisch unter skulpturalem Pendelleuchte, Berge im Fenster.",
+  "bath_alt": "Steinbad mit freistehender Wanne und warmem Holzdach.",
+  "spa_alt": "Spa-Raum mit dunkler Steinwanne und sanfter Indirektbeleuchtung.",
+  "hallway_alt": "Holzflur mit langer Steinwand und eingelassener Beleuchtung.",
+  "exterior_dusk_alt": "Chalet aus Stein und Lärche in der Dämmerung, warme Fenster zum Tal.",
+  "detail_junction_alt": "Detail, wo Steinwand auf helle Holzbalken trifft.",
+  "detail_textiles_alt": "Weiche Textilien und Bettwäsche in warmem Alpenlicht."
 }

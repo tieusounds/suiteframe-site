@@ -454,8 +454,8 @@ a:hover {
 
 .demo__thumbs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
 }
 
 .demo__thumbs img {
@@ -533,6 +533,10 @@ a:hover {
   .demo__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-md);
+  }
+
+  .demo__thumbs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

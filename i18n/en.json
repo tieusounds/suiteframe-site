@@ -13,7 +13,7 @@
   "what_label": "What we do",
   "what_body": "We turn your listing photos into a quiet, cinematic tour of each room — for houses that sell on atmosphere.",
   "demo_title": "Sample tour",
-  "demo_lead": "Six photos. One tour nobody scrolls past.",
+  "demo_lead": "Every photo you send. One tour nobody scrolls past.",
   "demo_sub": "A sample property, built the way yours would be — from photos you already have.",
   "demo_photos_label": "What we start with",
   "demo_video_label": "What guests see",
@@ -95,5 +95,13 @@
   "form_error_url": "Enter a full URL (https://…)",
   "form_error_send": "Could not send. Please email customer@suiteframe.ch.",
   "privacy_form_h": "Quote requests",
-  "privacy_form_body": "If you submit the quote form, we receive your name, email, phone, property address, and listing or website link by email at customer@suiteframe.ch via Web3Forms (form delivery processor). We use these details only to prepare and send a quote and related correspondence. We do not sell this data."
+  "privacy_form_body": "If you submit the quote form, we receive your name, email, phone, property address, and listing or website link by email at customer@suiteframe.ch via Web3Forms (form delivery processor). We use these details only to prepare and send a quote and related correspondence. We do not sell this data.",
+  "living_side_alt": "Living room window seat facing snow-capped peaks through a long pane.",
+  "dining_alt": "Dining table under a sculptural pendant, mountains framed in the window.",
+  "bath_alt": "Stone bathroom with a freestanding tub and warm timber ceiling.",
+  "spa_alt": "Spa room with a dark stone bath and soft cove lighting.",
+  "hallway_alt": "Timber hallway with a long stone wall and recessed lighting.",
+  "exterior_dusk_alt": "Stone and larch chalet at dusk, warm windows overlooking the valley.",
+  "detail_junction_alt": "Close detail where stone wall meets pale timber beams.",
+  "detail_textiles_alt": "Soft textiles and bedding in warm alpine light."
 }
